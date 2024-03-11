@@ -8,8 +8,8 @@ import numpy as np
 
 # global variable stores the people count
 count_var = 0
-animal_type = ""
-threat_type = ""
+animal_type = "none"
+threat_type = "none"
 
 # creating flask app
 app = Flask(__name__)

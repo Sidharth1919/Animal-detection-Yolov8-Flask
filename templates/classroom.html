@@ -92,46 +92,53 @@
 
   }
 
-  // ajax requesting for lve count
+// ajax requesting for lve count
+var ip_address = "{{ ip_address }}"; // Ensure this gets the value from Flask
 
-  function updatecount() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
+function updatecount() {
+  // Check if ip_address is 0 or 1, indicating the video is on
+  if (ip_address == "0" || ip_address == "1") {
+    // Only then, send AJAX requests to update count, type, and threat
+    var xhttpCount = new XMLHttpRequest();
+    xhttpCount.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         document.getElementById('count').innerHTML = this.responseText;
       }
     };
-    xhttp.open('GET', '/count', true);
-    xhttp.send()
+    xhttpCount.open('GET', '/count', true);
+    xhttpCount.send();
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
+    var xhttpType = new XMLHttpRequest();
+    xhttpType.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         document.getElementById('type').innerHTML = this.responseText;
       }
     };
-    xhttp.open('GET', '/type', true);
-    xhttp.send()
+    xhttpType.open('GET', '/type', true);
+    xhttpType.send();
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
+    var xhttpThreat = new XMLHttpRequest();
+    xhttpThreat.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         document.getElementById('threat').innerHTML = this.responseText;
       }
     };
-    xhttp.open('GET', '/threat', true);
-    xhttp.send()
-    
-
+    xhttpThreat.open('GET', '/threat', true);
+    xhttpThreat.send();
+  } else {
+    // If the video is off, you might want to reset or handle the display of count, type, and threat differently
+    console.log("Video is off. No updates to count, type, or threat.");
+  }
     // Update the video feed source with the IP address
 
     var videoFeed = document.getElementById('videoFeed');
     if (videoFeed) {
       videoFeed.src = "{{ url_for('video_feed', ip=ip_address)}}";
     }
-  }
-  setInterval(updatecount, 500)
+}
 
+// Call updatecount every 500 milliseconds (0.5 seconds)
+setInterval(updatecount, 500);
 </script>
 
 {% endblock body %}
