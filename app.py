@@ -1,5 +1,6 @@
 # importing libraries
-from flask import Flask, render_template, Response, request, redirect, url_for
+from flask import Flask, render_template, Response, request
+from flask_socketio import SocketIO
 import cv2
 import os
 import signal
@@ -17,11 +18,18 @@ class_index = -1
 
 # creating flask app
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 # home route
 @app.route("/")
 def index():
     return render_template('index.html')
+
+@socketio.on('update_class_index')
+def handle_update_class_index(json):
+    global class_index
+    class_index = json.get('classIndex')
+    print('received class index: ' + str(class_index))
 
 VIDEO_FILE_PATH = "test2.mp4"  
 
@@ -79,8 +87,9 @@ def generate_frames(input_source):
 
         # -------- getting indexes of the detections containing animals--------#
         idx = []
+        int_index = int(class_index) # converting the class index to int
         for i in range(0, len(classes)):
-            if classes[i] in [0, 18, 19]:  
+            if classes[i] in [int_index]:  
                 idx.append(i)
                 print("this is idx:",idx)
 
@@ -225,4 +234,4 @@ def farm():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    socketio.run(app, debug=True)

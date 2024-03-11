@@ -22,6 +22,7 @@
 </form>
 
 </div>
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
 <script>
   const form = document.getElementById('farmForm');
@@ -48,6 +49,13 @@
     window.location.href = "/farm"; 
   });
 
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+  document.getElementById('farmSelect').onchange = function(event) {
+    var classIndex = document.getElementById('farmSelect').value;
+    socket.emit('update_class_index', { classIndex: classIndex });
+    console.log('classIndex:', classIndex);
+  };
 </script>
 
 {% endblock body %}
