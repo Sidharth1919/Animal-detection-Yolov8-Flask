@@ -37,7 +37,8 @@
       <tr>
         <th>Video Source</th>
         <th>Farm</th>
-        <th>Detections</th>
+        <th>Animal type</th>
+        <th>In farm</th>
         <th id="animal">Number Of Animals in Farm</th>
         <th>Threat detected</th>
       </tr>
@@ -47,6 +48,7 @@
         <td>{{ ip_address }}</td>
         <td id="farm">none selected</td>
         <td id="type">none</td>
+        <td id="detections">none</td>
         <td id="count">0</td>
         <td id="threat">none</td>
       </tr>
@@ -147,6 +149,15 @@ function updatecount() {
     xhttpType.open('GET', '/type', true);
     xhttpType.send();
 
+    var xhttpDetections = new XMLHttpRequest();
+    xhttpDetections.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById('detections').innerHTML = this.responseText;
+      }
+    };
+    xhttpDetections.open('GET', '/detections', true);
+    xhttpDetections.send();
+
     var xhttpThreat = new XMLHttpRequest();
     xhttpThreat.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
@@ -155,6 +166,7 @@ function updatecount() {
     };
     xhttpThreat.open('GET', '/threat', true);
     xhttpThreat.send();
+    
   } else {
     // If the video is off, you might want to reset or handle the display of count, type, and threat differently
     console.log("Video is off. No updates to count, type, or threat.");
