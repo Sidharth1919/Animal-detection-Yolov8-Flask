@@ -5,7 +5,6 @@ import os
 import signal
 from ultralytics import YOLO
 import numpy as np
-import pandas as pd
 
 # global variables
 count_var = 0
@@ -100,11 +99,11 @@ def generate_frames(input_source):
         print("----------------------------------------------------------")
         # -------------------------------------#
 
-        for r in results:
-            for c in r.boxes.cls:
-                if int(c) in [0, 18, 19]:
-                    animal_type = names[int(c)]
-                    print("this is animal type:",animal_type)
+        # for r in results:
+        #     for c in r.boxes.cls:
+        #         if int(c) in [0, 18, 19]:
+        #             animal_type = names[int(c)]
+        #             print("this is animal type:",animal_type)
 
 
         if animal_type == "cow":
@@ -190,9 +189,9 @@ def stop_feed():
 def count():
     return str(count_var)
 
-@app.route("/type")
-def type():
-    return str(animal_type)
+# @app.route("/type")
+# def type():
+#     return str(animal_type)
 
 @app.route("/detections")
 def detections():
