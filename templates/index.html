@@ -7,17 +7,20 @@
 <div class="container border border-info rounded mt-5 text-center">
   <i class="fa-solid fa-camera-cctv"></i>
   <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1>
-  <form id="farmForm">
+  <form id="farmForm" action="/set_class_index" method="post">
     <label for="farm">Select a farm:</label>
     <select name="farm" id="farmSelect">
       <option>-</option>
-      <option value="Cow">Cow</option>
-      <option value="Sheep">Sheep</option>
-      <option value="Pig">Pig</option>
+      <option value="19">Cow</option>
+      <option value="18">Sheep</option>
+      <option value="17">Pig</option>
     </select>
+    <!-- Hidden input for class index -->
+    <input type="hidden" id="classIndexInput" name="classIndex" value="">
     <br><br>
-    <a href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton">Get Started!</a>
-  </form>
+    <button href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton" type="submit">Get Started!</button>
+</form>
+
 </div>
 
 <script>
@@ -27,14 +30,24 @@
   getStartedButton.addEventListener('click', function(event) {
     event.preventDefault();
 
-    const selectedFarm = document.getElementById('farmSelect').value;
+    const classIndex = document.getElementById('farmSelect').value;
+    console.log('classIndex:', classIndex);
+
+    // Get the selected <option> element
+    const selectElement = document.getElementById('farmSelect');
+    const selectedOption = selectElement.selectedOptions[0]; 
+
+    // Get the text content
+    const selectedFarm = selectedOption.textContent.trim();
 
     // Store selected farm in local storage
     localStorage.setItem('selectedFarm', selectedFarm);
+    
 
     // Redirect to farm.html 
     window.location.href = "/farm"; 
   });
+
 </script>
 
 {% endblock body %}
