@@ -5,12 +5,21 @@
 <!-- create farm -->
 
 <form class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm')  }}">
-  <h1 class="text-center">Create farm</h1>
+  <h1 class="text-center">Surveillance  footage</h1>
   <div class="mb-3 mt-3">
-    <label for="ip" class="form-label">Enter IP Address And PORT:</label>
-    <input type="text" class="form-control" id="ip" placeholder="Enter IP Address And PORT" name="ip">
+    <label for="ip" class="form-label">Select video source:</label>
+    <div class="form-control" style="border: none; padding: 0;">
+      <div class="form-check">
+        <input type="radio" id="webcam" name="ip" value="0" class="form-check-input">
+        <label for="webcam" class="form-check-label">Webcam</label>
+      </div>
+      <div class="form-check">
+        <input type="radio" id="localFile" name="ip" value="1" class="form-check-input">
+        <label for="localFile" class="form-check-label">Local file</label>
+      </div>
+    </div>
   </div>
-  <button type="submit" class="btn btn-dark" value="submit" id="btn1">Create</button>
+  <button type="submit" class="btn btn-dark" value="submit" id="btn1">Start</button>
   <button type="button" class="btn btn-dark" id="btn3" onclick="hidefeed()">Hide Video</button>
   <button type="button" class="btn btn-dark" id="btn2" onclick="stopfeed()">Kill Process</button>
 </form>
@@ -28,8 +37,7 @@
       <tr>
         <th>Video Source</th>
         <th>Farm</th>
-        <th>Animal detected</th>
-        <!-- <th>In shed</th> -->
+        <th>Detections</th>
         <th id="animal">Number Of Animals in Farm</th>
         <th>Threat detected</th>
       </tr>
