@@ -6,8 +6,34 @@
 
 <div class="container border border-info rounded mt-5 text-center">
   <i class="fa-solid fa-camera-cctv"></i>
-  <h1 class="display-3 my-3"><b>Number Of Person <br> In A Room</b></h1>
-  <a href="/classroom" class="btn btn-outline-dark btn-lg my-5">Get Started!</a>
+  <h1 class="display-3 my-3"><b>Number Of Animals <br> In A Farm</b></h1>
+  <form id="farmForm">
+    <label for="farm">Select a farm:</label>
+    <select name="farm" id="farmSelect">
+      <option value="Cow">Cow</option>
+      <option value="Sheep">Sheep</option>
+      <option value="Pig">Pig</option>
+    </select>
+    <br><br>
+    <a href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton">Get Started!</a>
+  </form>
 </div>
+
+<script>
+  const form = document.getElementById('farmForm');
+  const getStartedButton = document.getElementById('getStartedButton');
+
+  getStartedButton.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const selectedFarm = document.getElementById('farmSelect').value;
+
+    // Store selected farm in local storage
+    localStorage.setItem('selectedFarm', selectedFarm);
+
+    // Redirect to farm.html 
+    window.location.href = "/farm"; 
+  });
+</script>
 
 {% endblock body %}

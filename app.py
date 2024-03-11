@@ -6,7 +6,7 @@ import signal
 from ultralytics import YOLO
 import numpy as np
 
-# global variable stores the people count
+# global variables
 count_var = 0
 animal_type = "none"
 threat_type = "none"
@@ -55,14 +55,9 @@ def generate_frames(input_source):
 
         results = model(frame)
         result = results[0]
-        # print("this is results :")
-        # print(results)
         print("this is shape of frame,",frame.shape)
         print("this is result :")
         print(result)
-
-        # classes = np.array(result.boxes.names.cpu())
-        # print("this is classes:",classes)
 
         # ------- to get the classes of the yolo model to filter out the people---------------#
         classes = np.array(result.boxes.cls.cpu(),dtype="int")
@@ -76,7 +71,7 @@ def generate_frames(input_source):
         bboxes = np.array(result.boxes.xyxy.cpu(),dtype="int")
         print("this is boxes",bboxes)
 
-        # -------- getting indexes of the detections containing persons--------#
+        # -------- getting indexes of the detections containing animals--------#
         idx = []
         for i in range(0, len(classes)):
             if classes[i] in [0, 18, 19]:  
@@ -100,7 +95,7 @@ def generate_frames(input_source):
 
         print("these are indexes:",idx)
 
-        # ----------- bounding boxes for person detections---------------#
+        # ----------- bounding boxes for animal detections---------------#
         bbox = [] 
         for i in idx:
             temp = bboxes[i]
@@ -127,13 +122,13 @@ def generate_frames(input_source):
         print("this are the centroids in the current frame")
         print(centr_pt_cur_fr)
 
-        # ------------- counting of total people in the footage ------------# 
+        # ------------- counting of total no of animals in the footage ------------# 
         animal_count = len(centr_pt_cur_fr)
 
-        # counting the number of faces with count_var variable
+        # counting the number of animals with count_var variable
         count_var = animal_count
 
-        # displaying the face count on the screen for experiment purpose
+        # displaying the count on the screen
         cv2.putText(frame, f'Animals: {animal_count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(frame, f'Type: {animal_type}', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
 
@@ -183,30 +178,25 @@ def type():
 def threat():
     return str(threat_type)
 
-# classroom route
-@app.route("/classroom", methods = ['GET', 'POST'])
-def classroom():
+# farm route
+@app.route("/farm", methods = ['GET', 'POST'])
+def farm():
 
     # logic for input field validation
     if request.method == 'POST':
         
         if (request.form['ip'] == ''):
             inv_feed ="No Video-Feed!"
-            return render_template('classroom.html',var2 = inv_feed)
+            return render_template('farm.html',var2 = inv_feed)
         
         else:
             ip_address = request.form['ip']
             ip_vd_feed = "Video-Feed"
-            return render_template('classroom.html', ip_address = ip_address, var2 = ip_vd_feed)
+            return render_template('farm.html', ip_address = ip_address, var2 = ip_vd_feed)
     
     if request.method == 'GET':
-        return render_template('classroom.html')
+        return render_template('farm.html')
 
-
-# about page route
-@app.route("/about")
-def about():
-    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
