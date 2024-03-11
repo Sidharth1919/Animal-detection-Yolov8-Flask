@@ -76,7 +76,7 @@
 
       // Update the table heading
       const tableHeading = document.getElementById('animal');
-      if (tableHeading) { 
+      if (tableHeading && selectedFarm !== "-") { 
         tableHeading.textContent = `Number Of ${selectedFarm}'s in Farm`;
       }
 
