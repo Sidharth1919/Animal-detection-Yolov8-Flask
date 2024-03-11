@@ -5,11 +5,15 @@ import os
 import signal
 from ultralytics import YOLO
 import numpy as np
+import pandas as pd
 
 # global variables
 count_var = 0
 animal_type = "none"
 threat_type = "none"
+detection_list = []
+csv_str = "none"
+
 
 # creating flask app
 app = Flask(__name__)
@@ -28,6 +32,8 @@ def generate_frames(input_source):
     global count_var
     global animal_type
     global threat_type
+    global detection_list
+    global csv_str
     model = YOLO("yolov8n.pt")
 
     if input_source == 0:  # Webcam
@@ -55,9 +61,9 @@ def generate_frames(input_source):
 
         results = model(frame)
         result = results[0]
-        print("this is shape of frame,",frame.shape)
-        print("this is result :")
-        print(result)
+        # print("this is shape of frame,",frame.shape)
+        # print("this is result :")
+        # print(result)
 
         # ------- to get the classes of the yolo model to filter out the people---------------#
         classes = np.array(result.boxes.cls.cpu(),dtype="int")
@@ -77,15 +83,29 @@ def generate_frames(input_source):
             if classes[i] in [0, 18, 19]:  
                 idx.append(i)
 
-        names=model.names
+        cls=classes.tolist() # detected class id tensor to list
+        print("this is cls:",cls)
+        cls_set=set(cls) # unique classes
+
+        names=model.names #dict of classes
+
+        # --------- testing detection----------#
+        detection_list = [] # list to store the detected classes
+        for i in cls_set:
+            if i in names:
+                detection_list.append(names[i])
+        print("this is detection_list:",detection_list)
+        csv_str = ', '.join(detection_list)
+        print("this is string of detections:",csv_str)
+        print("----------------------------------------------------------")
+        # -------------------------------------#
+
         for r in results:
             for c in r.boxes.cls:
                 if int(c) in [0, 18, 19]:
                     animal_type = names[int(c)]
                     print("this is animal type:",animal_type)
 
-        cls=classes.tolist()
-        print("this is cls:",cls)
 
         if animal_type == "cow":
             if 0 in cls:
@@ -173,6 +193,10 @@ def count():
 @app.route("/type")
 def type():
     return str(animal_type)
+
+@app.route("/detections")
+def detections():
+    return str(csv_str)
 
 @app.route("/threat")
 def threat():
