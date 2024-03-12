@@ -1,5 +1,6 @@
 # importing libraries
 from flask import Flask, render_template, Response, request
+from flask_socketio import SocketIO
 import cv2
 import os
 import signal
@@ -8,19 +9,27 @@ import numpy as np
 
 # global variables
 count_var = 0
-animal_type = "none"
+# animal_type = "none"
 threat_type = "none"
 detection_list = []
 csv_str = "none"
+class_index = -1
 
 
 # creating flask app
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 # home route
 @app.route("/")
 def index():
     return render_template('index.html')
+
+@socketio.on('update_class_index')
+def handle_update_class_index(json):
+    global class_index
+    class_index = json.get('classIndex')
+    print('received class index: ' + str(class_index))
 
 VIDEO_FILE_PATH = "test2.mp4"  
 
@@ -29,7 +38,7 @@ def generate_frames(input_source):
 
     # access the global variable
     global count_var
-    global animal_type
+    # global animal_type
     global threat_type
     global detection_list
     global csv_str
@@ -78,9 +87,11 @@ def generate_frames(input_source):
 
         # -------- getting indexes of the detections containing animals--------#
         idx = []
+        int_index = int(class_index) # converting the class index to int
         for i in range(0, len(classes)):
-            if classes[i] in [0, 18, 19]:  
+            if classes[i] in [int_index]:  
                 idx.append(i)
+                print("this is idx:",idx)
 
         cls=classes.tolist() # detected class id tensor to list
         print("this is cls:",cls)
@@ -97,6 +108,7 @@ def generate_frames(input_source):
         csv_str = ', '.join(detection_list)
         print("this is string of detections:",csv_str)
         print("----------------------------------------------------------")
+        print(class_index)
         # -------------------------------------#
 
         # for r in results:
@@ -106,10 +118,10 @@ def generate_frames(input_source):
         #             print("this is animal type:",animal_type)
 
 
-        if animal_type == "cow":
-            if 0 in cls:
-                print("kcbckdbckdbckdbckdbckdbcjkdbcjkdbcdcdncdkhcbdckbkjdbckdbjkd")
-                threat_type = "Person"
+        # if animal_type == "cow":
+        #     if 0 in cls:
+        #         print("kcbckdbckdbckdbckdbckdbcjkdbcjkdbcdcdncdkhcbdckbkjdbckdbjkd")
+        #         threat_type = "Person"
 
 
         print("these are indexes:",idx)
@@ -123,7 +135,7 @@ def generate_frames(input_source):
         
         # Convert to bbox to multidimensional list
         box_multi_list = [arr.tolist() for arr in bbox]
-        print("this are final human detected boxes")
+        print("this are final animal detected boxes")
         print(box_multi_list)    
 
         # ------------ drawing of bounding boxes-------------#
@@ -149,7 +161,7 @@ def generate_frames(input_source):
 
         # displaying the count on the screen
         cv2.putText(frame, f'Animals: {animal_count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(frame, f'Type: {animal_type}', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+        # cv2.putText(frame, f'Type: {animal_type}', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
 
 
         # if the q is pressed the the loop is broken
@@ -222,4 +234,4 @@ def farm():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    socketio.run(app, debug=True)

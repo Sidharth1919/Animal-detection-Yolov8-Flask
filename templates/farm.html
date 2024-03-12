@@ -136,57 +136,60 @@
 // ajax requesting for lve count
 var ip_address = "{{ ip_address }}"; // Ensure this gets the value from Flask
 
-function updatecount() {
-  // Check if ip_address is 0 or 1, indicating the video is on
-  if (ip_address == "0" || ip_address == "1") {
-    // Only then, send AJAX requests to update count, type, and threat
-    var xhttpCount = new XMLHttpRequest();
-    xhttpCount.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById('count').innerHTML = this.responseText;
-      }
-    };
-    xhttpCount.open('GET', '/count', true);
-    xhttpCount.send();
+if (ip_address == "0" || ip_address == "1") {
+  function updatecount() {
+      // Only then, send AJAX requests to update count, type, and threat
+      var xhttpCount = new XMLHttpRequest();
+      xhttpCount.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById('count').innerHTML = this.responseText;
+        }
+      };
+      xhttpCount.open('GET', '/count', true);
+      xhttpCount.send();
+      console.log("Count updated");
 
-    // var xhttpType = new XMLHttpRequest();
-    // xhttpType.onreadystatechange = function () {
-    //   if (this.readyState == 4 && this.status == 200) {
-    //     document.getElementById('type').innerHTML = this.responseText;
-    //   }
-    // };
-    // xhttpType.open('GET', '/type', true);
-    // xhttpType.send();
+      // var xhttpType = new XMLHttpRequest();
+      // xhttpType.onreadystatechange = function () {
+      //   if (this.readyState == 4 && this.status == 200) {
+      //     document.getElementById('type').innerHTML = this.responseText;
+      //   }
+      // };
+      // xhttpType.open('GET', '/type', true);
+      // xhttpType.send();
 
-    var xhttpDetections = new XMLHttpRequest();
-    xhttpDetections.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById('detections').innerHTML = this.responseText;
-      }
-    };
-    xhttpDetections.open('GET', '/detections', true);
-    xhttpDetections.send();
+      var xhttpDetections = new XMLHttpRequest();
+      xhttpDetections.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById('detections').innerHTML = this.responseText;
+        }
+      };
+      xhttpDetections.open('GET', '/detections', true);
+      xhttpDetections.send();
+      console.log("Detections updated");
 
-    var xhttpThreat = new XMLHttpRequest();
-    xhttpThreat.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById('threat').innerHTML = this.responseText;
-      }
-    };
-    xhttpThreat.open('GET', '/threat', true);
-    xhttpThreat.send();
+      var xhttpThreat = new XMLHttpRequest();
+      xhttpThreat.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById('threat').innerHTML = this.responseText;
+        }
+      };
+      xhttpThreat.open('GET', '/threat', true);
+      xhttpThreat.send();
+      console.log("Threat updated");
+      
     
-  } else {
-    // If the video is off, you might want to reset or handle the display of count, type, and threat differently
-    console.log("Video is off. No updates to count, type, or threat.");
-  }
-    // Update the video feed source with the IP address
+      // Update the video feed source with the IP address
 
-    var videoFeed = document.getElementById('videoFeed');
-    if (videoFeed) {
-      videoFeed.src = "{{ url_for('video_feed', ip=ip_address)}}";
+      var videoFeed = document.getElementById('videoFeed');
+      if (videoFeed) {
+        videoFeed.src = "{{ url_for('video_feed', ip=ip_address)}}";
+      }
+  }
+} else {
+  // If the video is off, you might want to reset or handle the display of count, type, and threat differently
+    console.log("Video is off. No updates to count, type, or threat.");
     }
-}
 
 // Call updatecount every 500 milliseconds (0.5 seconds)
 setInterval(updatecount, 500);
