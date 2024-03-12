@@ -4,13 +4,17 @@
 
 <!-- heading -->
 
-<div class="container border border-info rounded mt-5 text-center" style="background-color: rgba(255, 255, 255, 0.8);">
+<div class="container mt-5 text-center">
   <i class="fa-solid fa-camera-cctv"></i>
-<h1 class="display-3 my-3 custom-border" style="color: white; font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 120px;">
+<<<<<<<<< Temporary merge branch 1
+  <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1>
+  <form id="farmForm" action="/set_class_index" method="post">
+    <label for="farm">Select a farm:</label>
+=========
+  <h1 class="display-3 my-3 custom-border" style="color: white; font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 120px;">
     ANIMAL MONITORING AND THREAT DETECTION SYSTEM 
   </h1>
-  <!-- <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1> -->
-  <form id="farmForm" action="/set_class_index" method="post">
+  <form id="farmForm">
     <label for="farm" style="font-weight: bold;">Select Farm:</label>
     <select name="farm" id="farmSelect">
       <option>-</option>
@@ -18,16 +22,22 @@
       <option value="18">Sheep</option>
       <option value="17">Pig</option>
     </select>
-    <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
-      Please select a valid farm from the dropdown.
-    </div>
+<<<<<<<<< Temporary merge branch 1
     <!-- Hidden input for class index -->
     <input type="hidden" id="classIndexInput" name="classIndex" value="">
+=========
+    <div id="errorMessage" style="display: none; background-color: white; color: black; font-weight: bold; border: 1px solid black; border-radius: 0; padding: 20px 5px; margin-top: 10px;">
+      Please select a valid farm from the dropdown.
+    </div>
+>>>>>>>>> Temporary merge branch 2
     <br><br>
     <button href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton" type="submit">Get Started!</button>
 </form>
 
 </div>
+<<<<<<<<< Temporary merge branch 1
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+=========
 <style>
   .custom-border {
     border-color: #000; /* Darker black color */
@@ -36,7 +46,8 @@
   }
   
 </style>
-<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
+>>>>>>>>> Temporary merge branch 2
 
 <script>
   const form = document.getElementById('farmForm');
@@ -45,22 +56,18 @@
   getStartedButton.addEventListener('click', function(event) {
     event.preventDefault();
 
-    const ValueCheck = document.getElementById('farmSelect').value;
+    const selectedFarm = document.getElementById('farmSelect').value;
     const errorMessage = document.getElementById('errorMessage');
 
-    if (ValueCheck === "-") {
+    if (selectedFarm === "-") {
+      // Show the custom message
       errorMessage.style.display = 'block';
-      return; 
+      return; // Stop the function here to prevent redirect
     } else {
       errorMessage.style.display = 'none'; // Hide message if the user selects a valid option
     }
-
-    // Get the selected <option> element
-    const selectElement = document.getElementById('farmSelect');
-    const selectedOption = selectElement.selectedOptions[0]; 
-
-    // Get the text content
-    const selectedFarm = selectedOption.textContent.trim();
+  
+>>>>>>>>> Temporary merge branch 2
 
     // Store selected farm in local storage
     localStorage.setItem('selectedFarm', selectedFarm);
