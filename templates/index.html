@@ -22,11 +22,7 @@
       <option value="18">Sheep</option>
       <option value="17">Pig</option>
     </select>
-<<<<<<<<< Temporary merge branch 1
-    <!-- Hidden input for class index -->
-    <input type="hidden" id="classIndexInput" name="classIndex" value="">
-=========
-    <div id="errorMessage" style="display: none; background-color: white; color: black; font-weight: bold; border: 1px solid black; border-radius: 0; padding: 20px 5px; margin-top: 10px;">
+    <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
       Please select a valid farm from the dropdown.
     </div>
 >>>>>>>>> Temporary merge branch 2
@@ -59,15 +55,19 @@
     const selectedFarm = document.getElementById('farmSelect').value;
     const errorMessage = document.getElementById('errorMessage');
 
-    if (selectedFarm === "-") {
-      // Show the custom message
+    if (ValueCheck === "-") {
       errorMessage.style.display = 'block';
-      return; // Stop the function here to prevent redirect
+      return; 
     } else {
       errorMessage.style.display = 'none'; // Hide message if the user selects a valid option
     }
-  
->>>>>>>>> Temporary merge branch 2
+
+    // Get the selected <option> element
+    const selectElement = document.getElementById('farmSelect');
+    const selectedOption = selectElement.selectedOptions[0]; 
+
+    // Get the text content
+    const selectedFarm = selectedOption.textContent.trim();
 
     // Store selected farm in local storage
     localStorage.setItem('selectedFarm', selectedFarm);
