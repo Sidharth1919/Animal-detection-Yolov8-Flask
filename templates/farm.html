@@ -7,7 +7,7 @@
 <form class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm')  }}">
   <h1 id="heading" class="text-center">Farm</h1>
   <div class="mb-3 mt-3">
-    <label for="ip" class="form-label">Select video source:</label>
+    <label for="ip" class="form-label"><strong>Select video source:</strong></label>
     <div class="form-control" style="border: none; padding: 0;">
       <div class="form-check">
         <input type="radio" id="webcam" name="ip" value="0" class="form-check-input">
@@ -15,24 +15,26 @@
       </div>
       <div class="form-check">
         <input type="radio" id="localFile" name="ip" value="1" class="form-check-input">
-        <label for="localFile" class="form-check-label">Local file</label>
+        <label for="localFile" class="form-check-label">Local File</label>
       </div>
     </div>
   </div>
-  <label id="number" for="cowCount">Total Number of Animals in Farm:</label>
+  <label id="number" for="cowCount" style="font-weight: bold;">Total Number of Animals in Farm:</label>
   <input type="number" class="form-control" id="cowCount" name="cowCount" min="0"> <br>
   <button type="submit" class="btn btn-dark" value="submit" id="btn1">Start</button>
   <button type="button" class="btn btn-dark" id="btn3" onclick="hidefeed()">Hide Video</button>
-  <button type="button" class="btn btn-dark" id="btn2" onclick="stopfeed()">Kill Process</button>
+  <button type="button" class="btn btn-dark" id="btn2" onclick="stopfeed()">End</button>
 </form>
 
 <!-- real-time data display -->
 
-<div class="container border border-dark rounded my-5 p-5 text-center" id="todocont">
+<div class="container border border-dark rounded my-5 p-5 text-center" id="todocont" style="background-color: rgba(255, 255, 255, 0.8);">
 
   <!-- real-time animal-counting -->
 
-  <h1 class="mt-5">Data</h1>
+  <h1 class="mt-5" style="padding-bottom: 0;">Data</h1>
+
+
 
   <table class="table table-hover">
     <thead>
@@ -40,7 +42,7 @@
         <th>Video Source</th>
         <th>Farm</th>
         <!-- <th>Animal type</th> -->
-        <th>In farm</th>
+        <th>In Farm</th>
         <th id="animal">Number Of Animals in Farm</th>
         <th>Threat detected</th>
       </tr>
@@ -48,11 +50,11 @@
     <tbody>
       <tr>
         <td>{{ ip_address }}</td>
-        <td id="farm">none selected</td>
+        <td id="farm">None Selected</td>
         <!-- <td id="type">none</td> -->
-        <td id="detections">none</td>
+        <td id="detections">None</td>
         <td id="count">0</td>
-        <td id="threat">none</td>
+        <td id="threat">None</td>
       </tr>
     </tbody>
   </table>
