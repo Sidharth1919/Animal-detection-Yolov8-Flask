@@ -4,17 +4,13 @@
 
 <!-- heading -->
 
-<div class="container mt-5 text-center">
+<div class="container border border-info rounded mt-5 text-center" style="background-color: rgba(255, 255, 255, 0.8);">
   <i class="fa-solid fa-camera-cctv"></i>
-<<<<<<<<< Temporary merge branch 1
-  <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1>
-  <form id="farmForm" action="/set_class_index" method="post">
-    <label for="farm">Select a farm:</label>
-=========
-  <h1 class="display-3 my-3 custom-border" style="color: white; font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 120px;">
+<h1 class="display-3 my-3 custom-border" style="color: white; font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 120px;">
     ANIMAL MONITORING AND THREAT DETECTION SYSTEM 
   </h1>
-  <form id="farmForm">
+  <!-- <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1> -->
+  <form id="farmForm" action="/set_class_index" method="post">
     <label for="farm" style="font-weight: bold;">Select Farm:</label>
     <select name="farm" id="farmSelect">
       <option>-</option>
@@ -25,15 +21,13 @@
     <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
       Please select a valid farm from the dropdown.
     </div>
->>>>>>>>> Temporary merge branch 2
+    <!-- Hidden input for class index -->
+    <input type="hidden" id="classIndexInput" name="classIndex" value="">
     <br><br>
     <button href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton" type="submit">Get Started!</button>
 </form>
 
 </div>
-<<<<<<<<< Temporary merge branch 1
-<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-=========
 <style>
   .custom-border {
     border-color: #000; /* Darker black color */
@@ -42,8 +36,7 @@
   }
   
 </style>
-
->>>>>>>>> Temporary merge branch 2
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
 <script>
   const form = document.getElementById('farmForm');
@@ -52,7 +45,7 @@
   getStartedButton.addEventListener('click', function(event) {
     event.preventDefault();
 
-    const selectedFarm = document.getElementById('farmSelect').value;
+    const ValueCheck = document.getElementById('farmSelect').value;
     const errorMessage = document.getElementById('errorMessage');
 
     if (ValueCheck === "-") {
