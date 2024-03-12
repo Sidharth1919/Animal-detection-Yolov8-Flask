@@ -61,6 +61,9 @@
   <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
     The count has been reduced. Please check the farm!
   </div>
+  <div id="threatMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
+    A THREAT HAS ENTERED YOUR FARM. PLEASE CHECK YOUR FARM!
+  </div>
   <!-- real-time video-feed -->
 
   <h1 class="mt-5">{{ var2 }}</h1>
@@ -210,6 +213,13 @@ if (ip_address == "0" || ip_address == "1") {
       xhttpThreat.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
           document.getElementById('threat').innerHTML = this.responseText;
+          console.log(this.responseText);
+          if(this.responseText !== "None"){
+            document.getElementById('threatMessage').style.display = "block"; // Show the error message
+          }
+          else{
+            document.getElementById('threatMessage').style.display = "none"; // Show the error message
+          }
         }
       };
       xhttpThreat.open('GET', '/threat', true);

@@ -10,7 +10,7 @@ import numpy as np
 # global variables
 count_var = 0
 # animal_type = "none"
-threat_type = "none"
+threat_type = "None"
 detection_list = []
 csv_str = "none"
 class_index = -1
@@ -110,6 +110,13 @@ def generate_frames(input_source):
         print("----------------------------------------------------------")
         print(class_index)
         # -------------------------------------#
+        # testing threat detection#
+        for i in cls_set:
+            if i in [0, 16, 20, 21]:
+                threat_type = names.get(i)
+                print("this is threat type:",threat_type)
+            else:
+                threat_type="None"
 
         # for r in results:
         #     for c in r.boxes.cls:
@@ -117,11 +124,6 @@ def generate_frames(input_source):
         #             animal_type = names[int(c)]
         #             print("this is animal type:",animal_type)
 
-
-        # if animal_type == "cow":
-        #     if 0 in cls:
-        #         print("kcbckdbckdbckdbckdbckdbcjkdbcjkdbcdcdncdkhcbdckbkjdbckdbjkd")
-        #         threat_type = "Person"
 
 
         print("these are indexes:",idx)
