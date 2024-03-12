@@ -19,8 +19,8 @@
       </div>
     </div>
   </div>
-  <label id="number" for="cowCount" style="font-weight: bold;">Total Number of Animals in Farm:</label>
-  <input type="number" class="form-control" id="cowCount" name="cowCount" min="0"> <br>
+  <label id="number" for="totalCount" style="font-weight: bold;">Total Number of Animals in Farm:</label>
+  <input type="number" class="form-control" id="totalCount" name="totalCount" min="0" > <br>
   <button type="submit" class="btn btn-dark" value="submit" id="btn1">Start</button>
   <button type="button" class="btn btn-dark" id="btn3" onclick="hidefeed()">Hide Video</button>
   <button type="button" class="btn btn-dark" id="btn2" onclick="stopfeed()">End</button>
@@ -90,9 +90,13 @@
         Heading.textContent = `${selectedFarm} Farm`;
         number.textContent = `Total Number of ${selectedFarm}'s in Farm`; 
       }
+      
+      // Retrieve the total count from local storage
+      const storedValue = localStorage.getItem('totalCount');
+      if (storedValue) {
+          totalCount.value = storedValue;
+      }
 
-        // Optionally clear local storage after use
-        // localStorage.removeItem('selectedFarm'); 
       }
     };
 
@@ -136,28 +140,32 @@
 // ajax requesting for lve count
 var ip_address = "{{ ip_address }}"; // Ensure this gets the value from Flask
 
+// Store the total count in localStorage when start button is clicked
+document.getElementById('btn1').addEventListener('click', function() {
+  const totalCountInput = document.getElementById('totalCount');
+  const storedValue = totalCountInput.value; 
+
+  // store value in localStorage:
+   localStorage.setItem('totalCount', storedValue);
+   console.log(storedValue)
+});
+
+// starts only when the video is on
 if (ip_address == "0" || ip_address == "1") {
   function updatecount() {
-      // Only then, send AJAX requests to update count, type, and threat
+// Only then, send AJAX requests to update count, type, and threat
+      // update count
       var xhttpCount = new XMLHttpRequest();
       xhttpCount.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
           document.getElementById('count').innerHTML = this.responseText;
-        }
+                  }
       };
       xhttpCount.open('GET', '/count', true);
       xhttpCount.send();
       console.log("Count updated");
 
-      // var xhttpType = new XMLHttpRequest();
-      // xhttpType.onreadystatechange = function () {
-      //   if (this.readyState == 4 && this.status == 200) {
-      //     document.getElementById('type').innerHTML = this.responseText;
-      //   }
-      // };
-      // xhttpType.open('GET', '/type', true);
-      // xhttpType.send();
-
+      // update type
       var xhttpDetections = new XMLHttpRequest();
       xhttpDetections.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -168,6 +176,7 @@ if (ip_address == "0" || ip_address == "1") {
       xhttpDetections.send();
       console.log("Detections updated");
 
+      // update threat
       var xhttpThreat = new XMLHttpRequest();
       xhttpThreat.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -186,7 +195,7 @@ if (ip_address == "0" || ip_address == "1") {
         videoFeed.src = "{{ url_for('video_feed', ip=ip_address)}}";
       }
   }
-} else {
+      } else {
   // If the video is off, you might want to reset or handle the display of count, type, and threat differently
     console.log("Video is off. No updates to count, type, or threat.");
     }
