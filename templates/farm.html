@@ -58,7 +58,9 @@
       </tr>
     </tbody>
   </table>
-
+  <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
+    The count has been reduced. Please check the farm!
+  </div>
   <!-- real-time video-feed -->
 
   <h1 class="mt-5">{{ var2 }}</h1>
@@ -150,6 +152,9 @@ document.getElementById('btn1').addEventListener('click', function() {
    console.log(storedValue)
 });
 
+var isCountReducedTimerActive = false;
+var countReductionTimeout;
+
 // starts only when the video is on
 if (ip_address == "0" || ip_address == "1") {
   function updatecount() {
@@ -159,7 +164,31 @@ if (ip_address == "0" || ip_address == "1") {
       xhttpCount.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
           document.getElementById('count').innerHTML = this.responseText;
-                  }
+        }
+        const totalCountInput = document.getElementById('totalCount');
+        const storedValue = totalCountInput.value;
+
+        if(this.responseText < storedValue){
+          if (!isCountReducedTimerActive) {
+            isCountReducedTimerActive = true;
+            // Start a timer of 5 seconds before logging and showing the error message
+            countReductionTimeout = setTimeout(function() {
+              console.log("count reduced");
+              document.getElementById('errorMessage').style.display = "block"; // Show the error message
+              isCountReducedTimerActive = false;
+            }, 5000);
+          }
+        } else {
+          // If current count is not less than storedValue, reset the timer and hide the error message
+          if (isCountReducedTimerActive) {
+            clearTimeout(countReductionTimeout);
+            document.getElementById('errorMessage').style.display = "none"; // Hide the error message
+            isCountReducedTimerActive = false;
+          } else if (this.responseText == storedValue) {
+            // If the current count is exactly equal to the stored value, ensure the error message is hidden
+            document.getElementById('errorMessage').style.display = "none";
+          }
+        }
       };
       xhttpCount.open('GET', '/count', true);
       xhttpCount.send();
@@ -200,7 +229,7 @@ if (ip_address == "0" || ip_address == "1") {
     console.log("Video is off. No updates to count, type, or threat.");
     }
 
-// Call updatecount every 500 milliseconds (0.5 seconds)
+    // Call updatecount every 500 milliseconds (0.5 seconds)
 setInterval(updatecount, 500);
 </script>
 
