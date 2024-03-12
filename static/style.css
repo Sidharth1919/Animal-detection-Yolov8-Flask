@@ -18,10 +18,23 @@ body{
     right: 0; /* Position from right */
     width: 50%; /* Width of the background (adjust as needed) */
     height: 100%; /* Full height */
-    background-image: url('/static/images/background.jpg'); /* Background image */
+    background-image: url('/static/images/background2.jpg'); /* Background image */
     background-size: cover; /* Cover the entire background */
     background-repeat: no-repeat; /* Do not repeat the background image */
     z-index: -1; /* Send the background behind other content */
+    }
+    #hometitle {
+        padding-left: 5vw; /* or adjust as needed */
+        max-width: 50%; /* Ensures it uses the full available width */
+        /* Add more styling as needed */
+         /* Example: Remove padding */
+        margin: 0; 
+      }
+      
+      /* If the parent container has padding or margin that affects alignment, adjust it accordingly */
+
+    #farmForm{
+        padding-left: 15vw;
     }
 
     table {
