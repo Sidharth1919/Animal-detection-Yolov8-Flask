@@ -18,7 +18,7 @@
       <option value="18">Sheep</option>
       <option value="17">Pig</option>
     </select>
-<div id="errorMessage" style="display: none; background-color: white; color: black; font-weight: bold; border: 1px solid black; border-radius: 0; padding: 20px 5px; margin-top: 10px;">
+    <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
       Please select a valid farm from the dropdown.
     </div>
     <!-- Hidden input for class index -->
@@ -49,15 +49,11 @@
     const errorMessage = document.getElementById('errorMessage');
 
     if (ValueCheck === "-") {
-      // Show the custom message
       errorMessage.style.display = 'block';
-      return; // Stop the function here to prevent redirect
+      return; 
     } else {
       errorMessage.style.display = 'none'; // Hide message if the user selects a valid option
     }
-
-    const classIndex = document.getElementById('farmSelect').value;
-    console.log('classIndex:', classIndex);
 
     // Get the selected <option> element
     const selectElement = document.getElementById('farmSelect');
