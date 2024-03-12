@@ -4,21 +4,35 @@
 
 <!-- heading -->
 
-<div class="container border border-info rounded mt-5 text-center">
+<div class="container mt-5 text-center">
   <i class="fa-solid fa-camera-cctv"></i>
-  <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1>
+  <h1 class="display-3 my-3 custom-border" style="color: white; font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 120px;">
+    ANIMAL MONITORING AND THREAT DETECTION SYSTEM 
+  </h1>
   <form id="farmForm">
-    <label for="farm">Select a farm:</label>
+    <label for="farm" style="font-weight: bold;">Select Farm:</label>
     <select name="farm" id="farmSelect">
       <option>-</option>
       <option value="Cow">Cow</option>
       <option value="Sheep">Sheep</option>
       <option value="Pig">Pig</option>
     </select>
+    <div id="errorMessage" style="display: none; background-color: white; color: black; font-weight: bold; border: 1px solid black; border-radius: 0; padding: 20px 5px; margin-top: 10px;">
+      Please select a valid farm from the dropdown.
+    </div>
     <br><br>
     <a href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton">Get Started!</a>
   </form>
 </div>
+<style>
+  .custom-border {
+    border-color: #000; /* Darker black color */
+    font-size: 45px;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; /* Increased shadow distance for a thicker appearance */
+  }
+  
+</style>
+
 
 <script>
   const form = document.getElementById('farmForm');
@@ -28,6 +42,16 @@
     event.preventDefault();
 
     const selectedFarm = document.getElementById('farmSelect').value;
+    const errorMessage = document.getElementById('errorMessage');
+
+    if (selectedFarm === "-") {
+      // Show the custom message
+      errorMessage.style.display = 'block';
+      return; // Stop the function here to prevent redirect
+    } else {
+      errorMessage.style.display = 'none'; // Hide message if the user selects a valid option
+    }
+  
 
     // Store selected farm in local storage
     localStorage.setItem('selectedFarm', selectedFarm);
