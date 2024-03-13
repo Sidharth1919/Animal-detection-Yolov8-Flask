@@ -1,17 +1,16 @@
 # importing libraries
-from flask import Flask, render_template, Response, request
-from flask_socketio import SocketIO
-import cv2
-import os
-import signal
-from ultralytics import YOLO
-import numpy as np
+from flask import Flask, render_template, Response, request # importing flask library for web app (render_template for rendering html files, Response for streaming video, request for getting the input from the user)
+from flask_socketio import SocketIO # importing socketio for real time communication between server and client
+import cv2 # importing opencv for image processing
+import os # importing os for killing the process
+import signal # importing signal for killing the process
+from ultralytics import YOLO # importing yolov8 for object detection
+import numpy as np # importing numpy for numerical operations
 
 # global variables
-count_var = 0
-# animal_type = "none"
-threat_type = "None"
-detection_list = []
+count_var = 0 # variable to store the count of animals
+threat_type = "None" 
+detection_list = [] # list to store the detected classes
 csv_str = "none"
 class_index = -1
 
@@ -25,6 +24,7 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html')
 
+# socketio event for updating the class from home page option
 @socketio.on('update_class_index')
 def handle_update_class_index(json):
     global class_index
@@ -38,7 +38,6 @@ def generate_frames(input_source):
 
     # access the global variable
     global count_var
-    # global animal_type
     global threat_type
     global detection_list
     global csv_str
@@ -49,11 +48,11 @@ def generate_frames(input_source):
     elif input_source == 1:  # Video file
         cap = cv2.VideoCapture(VIDEO_FILE_PATH)
     else:
-        return  # Invalid input source - Handle this in the route
-
+        return  # Handle error - TO DO
+    
     if not cap.isOpened():
         print("Error opening video stream or file")
-        return  # Handle error - return error response in route
+        return  # Handle error - TO DO
     while True:
 
         # ---------- capturing frames-----------#
@@ -69,9 +68,6 @@ def generate_frames(input_source):
 
         results = model(frame)
         result = results[0]
-        # print("this is shape of frame,",frame.shape)
-        # print("this is result :")
-        # print(result)
 
         # ------- to get the classes of the yolo model to filter out the people---------------#
         classes = np.array(result.boxes.cls.cpu(),dtype="int")
@@ -88,10 +84,12 @@ def generate_frames(input_source):
         # -------- getting indexes of the detections containing animals--------#
         idx = []
         int_index = int(class_index) # converting the class index to int
+        # Appending only the indexes of the classes(farm) that are selected by the user in the home page
         for i in range(0, len(classes)):
             if classes[i] in [int_index]:  
                 idx.append(i)
-                print("this is idx:",idx)
+                print("this is idexes:",idx)
+
 
         cls=classes.tolist() # detected class id tensor to list
         print("this is cls:",cls)
@@ -99,7 +97,7 @@ def generate_frames(input_source):
 
         names=model.names #dict of classes
 
-        # --------- testing detection----------#
+        # ---------detection of the selected class only----------#
         detection_list = [] # list to store the detected classes
         for i in cls_set:
             if i in names:
@@ -109,8 +107,8 @@ def generate_frames(input_source):
         print("this is string of detections:",csv_str)
         print("----------------------------------------------------------")
         print(class_index)
-        # -------------------------------------#
-        # testing threat detection#
+
+        # detecting only the threat classes given#
         for i in cls_set:
             if i in [0, 16, 20, 21]:
                 threat_type = names.get(i)
@@ -118,39 +116,27 @@ def generate_frames(input_source):
             else:
                 threat_type="None"
 
-        # for r in results:
-        #     for c in r.boxes.cls:
-        #         if int(c) in [0, 18, 19]:
-        #             animal_type = names[int(c)]
-        #             print("this is animal type:",animal_type)
-
-
-
-        print("these are indexes:",idx)
-
         # ----------- bounding boxes for animal detections---------------#
         bbox = [] 
         for i in idx:
             temp = bboxes[i]
-            print ("this is temp",temp)
+            print ("this is temp coordinates",temp)
             bbox.append(temp)
         
         # Convert to bbox to multidimensional list
         box_multi_list = [arr.tolist() for arr in bbox]
-        print("this are final animal detected boxes")
+        print("these are the final animal detected boxes")
         print(box_multi_list)    
 
         # ------------ drawing of bounding boxes-------------#
         for box in box_multi_list :
             (x,y,x2,y2) = box
-            
+            #findng the center point of the bounding box
             cv2.rectangle(frame,(x,y),(x2,y2),(0,0,255),2)
             cx = int((x+x2)/2)
             cy = int((y+y2)/2)
             centr_pt_cur_fr.append((cx,cy))
             cv2.circle(frame,(cx,cy),5,(0,0,255),-1)
-
-    
 
         print("this are the centroids in the current frame")
         print(centr_pt_cur_fr)
@@ -163,8 +149,6 @@ def generate_frames(input_source):
 
         # displaying the count on the screen
         cv2.putText(frame, f'Animals: {animal_count}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
-        # cv2.putText(frame, f'Type: {animal_type}', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
-
 
         # if the q is pressed the the loop is broken
         key = cv2.waitKey(1) & 0xFF
@@ -203,14 +187,12 @@ def stop_feed():
 def count():
     return str(count_var)
 
-# @app.route("/type")
-# def type():
-#     return str(animal_type)
-
+# detections route
 @app.route("/detections")
 def detections():
     return str(csv_str)
 
+# threat route
 @app.route("/threat")
 def threat():
     return str(threat_type)
