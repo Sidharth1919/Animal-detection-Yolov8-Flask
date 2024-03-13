@@ -217,13 +217,16 @@ if (ip_address == "0" || ip_address == "1") {
       var xhttpThreat = new XMLHttpRequest();
       xhttpThreat.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-          document.getElementById('threat').innerHTML = this.responseText;
-          console.log(this.responseText);
-          if(this.responseText !== "None"){
+          // document.getElementById('threat').innerHTML = this.responseText;
+          const threatclass = this.responseText;
+          console.log("latest: ", this.responseText);
+          if(threatclass !== "None"){
             document.getElementById('threatMessage').style.display = "block"; // Show the error message
+            document.getElementById('threat').innerHTML = this.responseText;
           }
           else{
             document.getElementById('threatMessage').style.display = "none"; // Show the error message
+            document.getElementById('threat').innerHTML = "none";
           }
         }
       };
