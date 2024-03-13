@@ -94,6 +94,8 @@ def generate_frames(input_source):
         cls=classes.tolist() # detected class id tensor to list
         print("this is cls:",cls)
         cls_set=set(cls) # unique classes
+        cls_list=list(cls_set) # unique classes to list
+        print(cls_list)
 
         names=model.names #dict of classes
 
