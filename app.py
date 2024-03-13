@@ -111,12 +111,14 @@ def generate_frames(input_source):
         print(class_index)
 
         # detecting only the threat classes given#
+        threat_types = []
         for i in cls_set:
             if i in [0, 16, 20, 21]:
-                threat_type = names.get(i)
-                print("this is threat type:",threat_type)
-            else:
-                threat_type="None"
+                detected_threat = names.get(i, "Unknown")  # Use "Unknown" as a default if `i` is not in `names`
+                if detected_threat not in threat_types:
+                    threat_types.append(detected_threat)
+
+        threat_type = ", ".join(threat_types) if threat_types else "None"
 
         # ----------- bounding boxes for animal detections---------------#
         bbox = [] 
