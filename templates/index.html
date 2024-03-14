@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 
 {% block body %}
+
 <head>
-  <link rel= "stylesheet" type= "text/css" href= "../static/style.css">
+  <link rel="stylesheet" type="text/css" href="../static/style.css">
 </head>
 <!-- heading -->
 <div id="homebg">
-  <img src="C:\Users\User\OneDrive\Desktop\Work\Pooja\final year project\animal-detection\static\images\background2.jpg" alt="home">
+  <img src="C:\Users\User\OneDrive\Desktop\Work\Pooja\final year project\animal-detection\static\images\background2.jpg"
+    alt="home">
 </div>
 <div id="hometitle" class="container mt-5 text-left>
-  <i class="fa-solid fa-camera-cctv"></i>
- <h1 class="display-3 my-3 custom-border" style="color: rgb(7, 48, 108); font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 150px;">
-    ANIMAL MONITORING AND THREAT DETECTION SYSTEM 
+  <i class=" fa-solid fa-camera-cctv"></i>
+  <h1 class="display-3 my-3 custom-border"
+    style="color: rgb(7, 48, 108); font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 150px;">
+    ANIMAL MONITORING AND THREAT DETECTION SYSTEM
   </h1>
   <!-- <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1> -->
   <form id="farmForm" action="/set_class_index" method="post">
@@ -22,23 +25,26 @@
       <option value="18">Sheep</option>
       <option value="17">Pig</option>
     </select>
-    <div id="errorMessage" style="display: none; background-color: white; color: black; border: 1px solid black; padding: 10px; margin-top: 10px;">
+    <div id="errorMessage"
+      style="display: none; background-color: white; color: black; border: 1px solid black; padding: 10px; margin-top: 10px;">
       Please select a valid farm from the dropdown.
     </div>
     <!-- Hidden input for class index -->
     <input type="hidden" id="classIndexInput" name="classIndex" value="">
     <br><br>
-    <button href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton" style="font-weight: bold;" type="submit">Get Started</button>
-</form>
+    <button href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton" style="font-weight: bold;"
+      type="submit">Get Started</button>
+  </form>
 
 </div>
 <style>
   .custom-border {
-    border-color: #000; /* Darker black color */
+    border-color: #000;
+    /* Darker black color */
     font-size: 45px;
-    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; /* Increased shadow distance for a thicker appearance */
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+    /* Increased shadow distance for a thicker appearance */
   }
-  
 </style>
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
@@ -46,7 +52,7 @@
   const form = document.getElementById('farmForm');
   const getStartedButton = document.getElementById('getStartedButton');
 
-  getStartedButton.addEventListener('click', function(event) {
+  getStartedButton.addEventListener('click', function (event) {
     event.preventDefault();
 
     const ValueCheck = document.getElementById('farmSelect').value;
@@ -54,29 +60,29 @@
 
     if (ValueCheck === "-") {
       errorMessage.style.display = 'block';
-      return; 
+      return;
     } else {
       errorMessage.style.display = 'none'; // Hide message if the user selects a valid option
     }
 
     // Get the selected <option> element
     const selectElement = document.getElementById('farmSelect');
-    const selectedOption = selectElement.selectedOptions[0]; 
+    const selectedOption = selectElement.selectedOptions[0];
 
     // Get the text content
     const selectedFarm = selectedOption.textContent.trim();
 
     // Store selected farm in local storage
     localStorage.setItem('selectedFarm', selectedFarm);
-    
+
 
     // Redirect to farm.html 
-    window.location.href = "/farm"; 
+    window.location.href = "/farm";
   });
 
   var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-  document.getElementById('farmSelect').onchange = function(event) {
+  document.getElementById('farmSelect').onchange = function (event) {
     var classIndex = document.getElementById('farmSelect').value;
     socket.emit('update_class_index', { classIndex: classIndex });
     console.log('classIndex:', classIndex);

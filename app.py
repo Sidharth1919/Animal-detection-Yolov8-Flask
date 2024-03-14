@@ -66,10 +66,10 @@ def generate_frames(input_source):
         # --------- list that stores the centroids of the current frame---------#
         centr_pt_cur_fr = []
 
-        results = model(frame)
+        results = model(frame) #Yolov8 model processes the frames
         result = results[0]
 
-        # ------- to get the classes of the yolo model to filter out the people---------------#
+        # ------- to get the classes of the yolo model to filter out the animals---------------#
         classes = np.array(result.boxes.cls.cpu(),dtype="int")
         print("this is classes:",classes)
 
@@ -117,6 +117,7 @@ def generate_frames(input_source):
                 detected_threat = names.get(i, "Unknown")  # Use "Unknown" as a default if `i` is not in `names`
                 if detected_threat not in threat_types:
                     threat_types.append(detected_threat)
+                    print("this is threat detected:",detected_threat)
 
         threat_type = ", ".join(threat_types) if threat_types else "None"
 
