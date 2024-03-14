@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 
 {% block body %}
+
 <head>
-  <link rel= "stylesheet" type= "text/css" href= "../static/style.css">
+  <link rel="stylesheet" type="text/css" href="../static/style.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <!-- create farm -->
 <img src="" id="bgimg">
 
-<form  class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm')  }}" style="background-color: rgba(255, 255, 255, 0.8);">
+<form class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm')  }}"
+  style="background-color: rgba(255, 255, 255, 0.8);">
   <h1 id="heading" class="text-center">Farm</h1>
   <div class="mb-3 mt-3">
     <label for="ip" class="form-label"><strong>Select video source:</strong></label>
@@ -23,7 +26,7 @@
     </div>
   </div>
   <label id="number" for="totalCount" style="font-weight: bold;">Total Number of Animals in Farm:</label>
-  <input type="number" class="form-control" id="totalCount" name="totalCount" min="0" > <br>
+  <input type="number" class="form-control" id="totalCount" name="totalCount" min="0"> <br>
   <button type="submit" class="btn btn-dark" value="submit" id="btn1">Start</button>
   <button type="button" class="btn btn-dark" id="btn3" onclick="hidefeed()">Hide Video</button>
   <button type="button" class="btn btn-dark" id="btn2" onclick="stopfeed()">End</button>
@@ -31,7 +34,8 @@
 
 <!-- real-time data display -->
 
-<div class="container border border-dark rounded my-5 p-5 text-center" id="todocont" style="background-color: rgba(255, 255, 255, 0.8);">
+<div class="container border border-dark rounded my-5 p-5 text-center" id="todocont"
+  style="background-color: rgba(255, 255, 255, 0.8);">
 
   <!-- real-time animal-counting -->
 
@@ -80,13 +84,13 @@
 
 <script>
   // Farm value from index.html
-  window.onload = function() {
-      // Retrieve selected farm from local storage
-      const selectedFarm = localStorage.getItem('selectedFarm');
+  window.onload = function () {
+    // Retrieve selected farm from local storage
+    const selectedFarm = localStorage.getItem('selectedFarm');
 
-      // Update the table cell
-      if (selectedFarm) {
-        document.getElementById('farm').textContent = selectedFarm;
+    // Update the table cell
+    if (selectedFarm) {
+      document.getElementById('farm').textContent = selectedFarm;
 
       // Update the table heading
       const tableHeading = document.getElementById('animal');
@@ -94,21 +98,23 @@
       const number = document.getElementById('number');
       const bgimg = document.getElementById('bgimg');
 
-      if (tableHeading && selectedFarm !== "-") { 
+      if (tableHeading && selectedFarm !== "-") {
         tableHeading.textContent = `Number Of ${selectedFarm}'s in Farm`;
         Heading.textContent = `${selectedFarm} Farm`;
         number.textContent = `Total Number of ${selectedFarm}'s in Farm`;
         bgimg.src = `static/images/${selectedFarm.toLowerCase()}-background.jpg`;
       }
-      
+
       // Retrieve the total count from local storage
       const storedValue = localStorage.getItem('totalCount');
       if (storedValue) {
-          totalCount.value = storedValue;
+        totalCount.value = storedValue;
       }
 
-      }
-    };
+    }
+    initializeEmailJS('evxSca2OAo-6_8rHD'); // Replace with your actual EmailJS User ID
+
+  };
 
   // Showing or Hiding video-feed
 
@@ -147,26 +153,26 @@
 
   }
 
-// ajax requesting for lve count
-var ip_address = "{{ ip_address }}"; // Ensure this gets the value from Flask
+  // ajax requesting for lve count
+  var ip_address = "{{ ip_address }}"; // Ensure this gets the value from Flask
 
-// Store the total count in localStorage when start button is clicked
-document.getElementById('btn1').addEventListener('click', function() {
-  const totalCountInput = document.getElementById('totalCount');
-  const storedValue = totalCountInput.value; 
+  // Store the total count in localStorage when start button is clicked
+  document.getElementById('btn1').addEventListener('click', function () {
+    const totalCountInput = document.getElementById('totalCount');
+    const storedValue = totalCountInput.value;
 
-  // store value in localStorage:
-   localStorage.setItem('totalCount', storedValue);
-   console.log(storedValue)
-});
+    // store value in localStorage:
+    localStorage.setItem('totalCount', storedValue);
+    console.log(storedValue)
+  });
 
-var isCountReducedTimerActive = false;
-var countReductionTimeout;
+  var isCountReducedTimerActive = false;
+  var countReductionTimeout;
 
-// starts only when the video is on
-if (ip_address == "0" || ip_address == "1") {
-  function updatecount() {
-// Only then, send AJAX requests to update count, type, and threat
+  // starts only when the video is on
+  if (ip_address == "0" || ip_address == "1") {
+    function updatecount() {
+      // Only then, send AJAX requests to update count, type, and threat
       // update count
       var xhttpCount = new XMLHttpRequest();
       xhttpCount.onreadystatechange = function () {
@@ -176,12 +182,13 @@ if (ip_address == "0" || ip_address == "1") {
         const totalCountInput = document.getElementById('totalCount');
         const storedValue = totalCountInput.value;
 
-        if(this.responseText < storedValue){
+        if (this.responseText < storedValue) {
           if (!isCountReducedTimerActive) {
             isCountReducedTimerActive = true;
             // Start a timer of 5 seconds before logging and showing the error message
-            countReductionTimeout = setTimeout(function() {
+            countReductionTimeout = setTimeout(function () {
               console.log("count reduced");
+              // sendAlertEmail("Animal count has reduced! Please check the farm.");
               document.getElementById('errorMessage').style.display = "block"; // Show the error message
               isCountReducedTimerActive = false;
             }, 5000);
@@ -217,38 +224,90 @@ if (ip_address == "0" || ip_address == "1") {
       var xhttpThreat = new XMLHttpRequest();
       xhttpThreat.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-          // document.getElementById('threat').innerHTML = this.responseText;
           const threatclass = this.responseText;
           console.log("latest: ", this.responseText);
-          if(threatclass !== "None"){
-            document.getElementById('threatMessage').style.display = "block"; // Show the error message
+
+          if (threatclass !== "None") {
+            document.getElementById('threatMessage').style.display = "block";
             document.getElementById('threat').innerHTML = this.responseText;
-          }
-          else{
-            document.getElementById('threatMessage').style.display = "none"; // Show the error message
+
+            // Start the threat timer if it's not already running
+            if (!threatTimer) {
+              threatTimer = setTimeout(function () {
+                const currentTime = getCurrentFormattedTime();
+                sendAlertEmail(`Threat (${threatclass}) detected in the farm at ${currentTime}. Please check the farm!`);
+                // Reset the timer
+              }, threatAlertDelay);
+            }
+
+          } else {
+            document.getElementById('threatMessage').style.display = "none";
             document.getElementById('threat').innerHTML = "none";
+
+            // If there is no threat, clear the timer (if running)
+            if (threatTimer) {
+              clearTimeout(threatTimer);
+              threatTimer = null;
+            }
           }
         }
       };
       xhttpThreat.open('GET', '/threat', true);
       xhttpThreat.send();
       console.log("Threat updated");
-      
-    
+
+
       // Update the video feed source with the IP address
 
       var videoFeed = document.getElementById('videoFeed');
       if (videoFeed) {
         videoFeed.src = "{{ url_for('video_feed', ip=ip_address)}}";
       }
-  }
-      } else {
-  // If the video is off, you might want to reset or handle the display of count, type, and threat differently
-    console.log("Video is off. No updates to count, type, or threat.");
     }
+  } else {
+    // If the video is off, you might want to reset or handle the display of count, type, and threat differently
+    console.log("Video is off. No updates to count, type, or threat.");
+  }
 
-    // Call updatecount every 500 milliseconds (0.5 seconds)
-setInterval(updatecount, 500);
+  // Call updatecount every 500 milliseconds (0.5 seconds)
+  setInterval(updatecount, 500);
+
+  function getCurrentFormattedTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    // Optionally add AM/PM if needed
+    const timeOfDay = hours >= 12 ? 'PM' : 'AM';
+    const adjustedHours = hours % 12 || 12;  // For 12-hour clock
+
+    // You can customize formatting as needed
+    return `${adjustedHours}:${minutes}:${seconds} ${timeOfDay}`;
+  }
+  // -------------------------------------------------------------------------------------------------------------//
+  // Initialize EmailJS (replace with your actual User ID)
+  function initializeEmailJS(userID) {
+    emailjs.init(userID);
+  }
+
+  // Function to send an alert email
+  function sendAlertEmail(message) {
+    const templateParams = {
+      message: message
+    };
+
+    emailjs.send('service_6npikfr', 'template_pfo1dry', templateParams)
+      .then(function (response) {
+        console.log('SUCCESS!', response.status, response.text);
+      }, function (error) {
+        console.log('FAILED...', error);
+      });
+  }
+
+  // Variables for threat detection and timer
+  let threatTimer = null;
+  const threatAlertDelay = 10000; // 10 seconds 
 </script>
 
 {% endblock body %}
