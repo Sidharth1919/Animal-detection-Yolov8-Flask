@@ -9,18 +9,21 @@
 <!-- create farm -->
 <img src="" id="bgimg">
 
-<form class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm')  }}"
-  style="background-color: rgba(255, 255, 255, 0.8);">
+<form class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm') }}" style="background-color: rgba(255, 255, 255, 0.8);">
   <h1 id="heading" class="text-center">Farm</h1>
   <div class="mb-3 mt-3">
-    <label for="ip" class="form-label"><strong>Select video source:</strong></label>
+    <label for="video_source" class="form-label"><strong>Select video source:</strong></label>
     <div class="form-control" style="border: none; padding: 0;">
       <div class="form-check">
-        <input type="radio" id="webcam" name="ip" value="0" class="form-check-input">
+        <input type="radio" id="webcam" name="video_source" value="0" class="form-check-input">
         <label for="webcam" class="form-check-label">Webcam</label>
       </div>
       <div class="form-check">
-        <input type="radio" id="localFile" name="ip" value="1" class="form-check-input">
+        <input type="radio" id="ipCamera" name="video_source" value="1" class="form-check-input">
+        <label for="ipCamera" class="form-check-label">IP Camera</label>
+      </div>
+      <div class="form-check">
+        <input type="radio" id="localFile" name="video_source" value="2" class="form-check-input">
         <label for="localFile" class="form-check-label">Local File</label>
       </div>
     </div>
@@ -56,7 +59,7 @@
     </thead>
     <tbody>
       <tr>
-        <td>{{ ip_address }}</td>
+        <td>{{ video_source }}</td>
         <td id="farm">None Selected</td>
         <!-- <td id="type">none</td> -->
         <td id="detections">None</td>
@@ -75,12 +78,13 @@
 
   <h1 class="mt-5">{{ var2 }}</h1>
 
-  {% if ip_address %}
-  <!-- <img class="mt-3 rounded" src="{{ url_for('video_feed')}}" id="videoFeed" alt="cctvfotage" width="50%"> -->
-  <img class="mt-3 rounded" src="{{ url_for('video_feed', ip=ip_address)}}" id="videoFeed" alt="cctvfotage" width="50%">
+  {% if video_source %}
+  <img class="mt-3 rounded" src="{{ url_for('video_feed', video_source=video_source)}}" id="videoFeed" alt="cctvfotage" width="50%">
   {% endif %}
 
 </div>
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
 
 <script>
   // Farm value from index.html
@@ -134,27 +138,8 @@
     }
   }
 
-  // to stoplive feed / kill the opencv process
 
-  function stopfeed() {
-
-    fetch('/stop_feed')
-      .then(response => {
-        if (response.ok) {
-          console.log('feed stopped!')
-        }
-        else {
-          console.log('error stopping feed!')
-        }
-      })
-      .catch(error => {
-        console.log('Error stopping feed: ', error)
-      })
-
-  }
-
-  // ajax requesting for lve count
-  var ip_address = "{{ ip_address }}"; // Ensure this gets the value from Flask
+  var video_source = "{{ video_source }}";
 
   // Store the total count in localStorage when start button is clicked
   document.getElementById('btn1').addEventListener('click', function () {
@@ -169,20 +154,33 @@
   var isCountReducedTimerActive = false;
   var countReductionTimeout;
 
+
+
   // starts only when the video is on
-  if (ip_address == "0" || ip_address == "1") {
-    function updatecount() {
-      // Only then, send AJAX requests to update count, type, and threat
-      // update count
-      var xhttpCount = new XMLHttpRequest();
-      xhttpCount.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-          document.getElementById('count').innerHTML = this.responseText;
+  if (video_source == "0" || video_source == "1" || video_source == "2") {
+    function updateinfo() {
+        var videoFeed = document.getElementById('videoFeed');
+        if (videoFeed) {
+            videoFeed.src = "{{ url_for('video_feed', video_source=video_source)}}";
         }
-        const totalCountInput = document.getElementById('totalCount');
+    }
+} else {
+    console.log("Video is off. No updates to count, type, or threat.");
+}
+  // Call updatecount every 500 milliseconds (0.5 seconds)
+  setInterval(updateinfo, 500);
+
+  // -------------------------------------------------socketio------------------------------------------------------------//
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+  console.log("connected to socket")
+
+  // COUNT UPDATION
+  socket.on('animal_count_update', function(data) {
+      document.getElementById('count').innerHTML = data.count;
+      const totalCountInput = document.getElementById('totalCount');
         const storedValue = totalCountInput.value;
 
-        if (this.responseText < storedValue) {
+        if (data.count < storedValue) {
           if (!isCountReducedTimerActive) {
             isCountReducedTimerActive = true;
             // Start a timer of 5 seconds before logging and showing the error message
@@ -199,37 +197,28 @@
             clearTimeout(countReductionTimeout);
             document.getElementById('errorMessage').style.display = "none"; // Hide the error message
             isCountReducedTimerActive = false;
-          } else if (this.responseText == storedValue) {
+          } else if (data.count == storedValue) {
             // If the current count is exactly equal to the stored value, ensure the error message is hidden
             document.getElementById('errorMessage').style.display = "none";
           }
         }
-      };
-      xhttpCount.open('GET', '/count', true);
-      xhttpCount.send();
-      console.log("Count updated");
 
-      // update type
-      var xhttpDetections = new XMLHttpRequest();
-      xhttpDetections.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-          document.getElementById('detections').innerHTML = this.responseText;
-        }
-      };
-      xhttpDetections.open('GET', '/detections', true);
-      xhttpDetections.send();
-      console.log("Detections updated");
+      console.log("recieved count")
+  });
 
-      // update threat
-      var xhttpThreat = new XMLHttpRequest();
-      xhttpThreat.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-          const threatclass = this.responseText;
-          console.log("latest: ", this.responseText);
+  // DETECTION UPDATION
+  socket.on('detections_update', function(data) {
+      document.getElementById('detections').innerHTML = data.detections;
+      console.log("recieved detections")
+  });
 
-          if (threatclass !== "None") {
+  // THREAT UPDATION
+  socket.on('threat_update', function(data) {
+      document.getElementById('threat').innerHTML = data.threat;
+      const threatclass = data.threat;
+      if (threatclass !== "None") {
             document.getElementById('threatMessage').style.display = "block";
-            document.getElementById('threat').innerHTML = this.responseText;
+            document.getElementById('threat').innerHTML = data.threat;
 
             // Start the threat timer if it's not already running
             if (!threatTimer) {
@@ -250,27 +239,17 @@
               threatTimer = null;
             }
           }
-        }
-      };
-      xhttpThreat.open('GET', '/threat', true);
-      xhttpThreat.send();
-      console.log("Threat updated");
+      console.log("recieved threat")
+  });
 
 
-      // Update the video feed source with the IP address
-
-      var videoFeed = document.getElementById('videoFeed');
-      if (videoFeed) {
-        videoFeed.src = "{{ url_for('video_feed', ip=ip_address)}}";
-      }
-    }
-  } else {
-    // If the video is off, you might want to reset or handle the display of count, type, and threat differently
-    console.log("Video is off. No updates to count, type, or threat.");
+  // Function to stop feed, emitting a stop_feed event
+  function stopfeed() {
+      socket.emit('stop_feed');
+      console.log("feed stopped")
   }
 
-  // Call updatecount every 500 milliseconds (0.5 seconds)
-  setInterval(updatecount, 500);
+  // -------------------------------------------------------------------------------------------------------------//
 
   function getCurrentFormattedTime() {
     const now = new Date();
