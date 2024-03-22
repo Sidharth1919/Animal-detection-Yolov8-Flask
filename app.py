@@ -74,7 +74,9 @@ def generate_frames(input_source):
         centr_pt_cur_fr = []
 
         results = model(frame) #Yolov8 model processes the frames
+        print("results: ",results)
         result = results[0]
+        print("result: ",result)
 
         # ------- to get the classes of the yolo model to filter out the animals---------------#
         classes = np.array(result.boxes.cls.cpu(),dtype="int")
