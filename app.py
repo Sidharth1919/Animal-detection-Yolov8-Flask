@@ -1,11 +1,16 @@
 # importing libraries
-from flask import Flask, render_template, Response, request # importing flask library for web app (render_template for rendering html files, Response for streaming video, request for getting the input from the user)
-from flask_socketio import SocketIO # importing socketio for real time communication between server and client
-import cv2 # importing opencv for image processing
-import os # importing os for killing the process
-import signal # importing signal for killing the process
-from ultralytics import YOLO # importing yolov8 for object detection
-import numpy as np # importing numpy for numerical operations
+from flask import Flask, render_template, Response, request, redirect, url_for, flash
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_socketio import SocketIO
+from flask_pymongo import PyMongo
+from werkzeug.security import check_password_hash, generate_password_hash
+from bson import ObjectId
+import os
+import signal
+import cv2
+from ultralytics import YOLO
+import numpy as np
+
 
 # global variables
 count_var = 0 # variable to store the count of animals
@@ -17,10 +22,79 @@ class_index = -1
 
 # creating flask app
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '10101'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/farmdb'
+
+mongo = PyMongo(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 socketio = SocketIO(app)
+
+class User(UserMixin):
+    def __init__(self, user_id, email):
+        self.id = str(user_id)
+        self.email = email
+
+    @staticmethod
+    def get(user_id):
+        if not ObjectId.is_valid(user_id):
+            return None
+        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)}, {'email': 1})
+        if user_data:
+            return User(user_data['_id'], user_data['email'])
+        return None
+
+
+    
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user_document = mongo.db.users.find_one({'email': email})
+
+        if user_document and check_password_hash(user_document['password'], password):
+            user = User(user_document['_id'], user_document['email'])
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid email/password combination')
+
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        existing_user = mongo.db.users.find_one({'email': email})
+
+        if existing_user is None:
+            hashed_password = generate_password_hash(password)
+            mongo.db.users.insert_one({'email': email, 'password': hashed_password})
+            return redirect(url_for('login'))
+        else:
+            flash('Email already exists')
+
+    return render_template('signup.html')
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
 
 # home route
 @app.route("/")
+@login_required
 def index():
     return render_template('index.html')
 
@@ -29,7 +103,16 @@ def index():
 def handle_update_class_index(json):
     global class_index
     class_index = json.get('classIndex')
+    user_id = current_user.id  # Assuming current_user is available
+
+    if ObjectId.is_valid(user_id):
+        mongo.db.users.update_one(
+            {'_id': ObjectId(user_id)},
+            {'$set': {'selected_farm_animal': int(class_index)}}
+        )
+
     print('received class index: ' + str(class_index))
+    
 
 @socketio.on('stop_feed')
 def handle_stop_feed():
@@ -74,9 +157,9 @@ def generate_frames(input_source):
         centr_pt_cur_fr = []
 
         results = model(frame) #Yolov8 model processes the frames
-        print("results: ",results)
+        # print("results: ",results)
         result = results[0]
-        print("result: ",result)
+        # print("result: ",result)
 
         # ------- to get the classes of the yolo model to filter out the animals---------------#
         classes = np.array(result.boxes.cls.cpu(),dtype="int")
@@ -207,6 +290,7 @@ def emit_updates():
 
 # farm route
 @app.route("/farm", methods = ['GET', 'POST'])
+@login_required
 def farm():
     if request.method == 'POST':
         
