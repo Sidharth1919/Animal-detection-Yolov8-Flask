@@ -15,17 +15,18 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'auth.login'
 
 class User(UserMixin):
-    def __init__(self, user_id, email):
+    def __init__(self, user_id, email, username):
         self.id = str(user_id)
         self.email = email
+        self.username = username  
 
     @staticmethod
     def get(user_id):
         if not ObjectId.is_valid(user_id):
             return None
-        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)}, {'email': 1})
+        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)}, {'email': 1, 'username': 1})  
         if user_data:
-            return User(user_data['_id'], user_data['email'])
+            return User(user_data['_id'], user_data['email'], user_data['username'])
         return None
 
 @login_manager.user_loader
@@ -43,7 +44,7 @@ def login():
         user_document = mongo.db.users.find_one({'email': email})
 
         if user_document and check_password_hash(user_document['password'], password):
-            user = User(user_document['_id'], user_document['email'])
+            user = User(user_document['_id'], user_document['email'], user_document.get('username', '')) 
             login_user(user)
             return redirect(url_for('index'))
         else:
@@ -56,14 +57,15 @@ def signup():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        existing_user = mongo.db.users.find_one({'email': email})
+        username = request.form.get('username') 
+        existing_user = mongo.db.users.find_one({'$or': [{'email': email}, {'username': username}]})
 
         if existing_user is None:
             hashed_password = generate_password_hash(password)
-            mongo.db.users.insert_one({'email': email, 'password': hashed_password})
+            mongo.db.users.insert_one({'email': email, 'password': hashed_password, 'username': username})
             return redirect(url_for('auth.login'))
         else:
-            flash('Email already exists')
+            flash('Email or username already exists')
 
     return render_template('signup.html')
 

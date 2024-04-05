@@ -149,6 +149,10 @@ body{
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+.signup-page .form-actions {
+  display: flex;
+  justify-content:space-between;
+}
 
 .signup-page button {
   margin-top: 20px;
