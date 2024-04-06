@@ -31,6 +31,11 @@ def handle_update_class_index(json):
     class_index = json.get('classIndex')
     print('received class index: ' + str(class_index))
 
+@socketio.on('stop_feed')
+def handle_stop_feed():
+    os.kill(os.getpid(), signal.SIGINT)
+
+
 VIDEO_FILE_PATH = "test2.mp4"  
 
 
@@ -45,7 +50,9 @@ def generate_frames(input_source):
 
     if input_source == 0:  # Webcam
         cap = cv2.VideoCapture(0)
-    elif input_source == 1:  # Video file
+    elif input_source == 1:  # cam
+        cap = cv2.VideoCapture('http://192.168.223.21:4747/video')
+    elif input_source == 2:  # Video file
         cap = cv2.VideoCapture(VIDEO_FILE_PATH)
     else:
         return  # Handle error - TO DO
@@ -165,6 +172,11 @@ def generate_frames(input_source):
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        
+        emit_updates()
+        print('emitted updates from function')
+    
+
 
     cap.release()
     cv2.destroyAllWindows()
@@ -173,50 +185,37 @@ def generate_frames(input_source):
 # video feed route
 @app.route("/video_feed")
 def video_feed():
-    ip_address = request.args.get('ip')
+    video_source = request.args.get('video_source')
     try:
-        ip_address = int(ip_address)
+        video_source = int(video_source)
     except ValueError:
-        return "Invalid IP address, please enter 0 or 1"
+        return "Invalid video source, please enter 0, 1, or 2"
 
-    return Response(generate_frames(ip_address), mimetype='multipart/x-mixed-replace; boundary=frame')
-    
-# video stop feed route
-@app.route("/stop_feed")
-def stop_feed():
-    os.kill(os.getpid(), signal.SIGINT)
-    return "feed stopped!"
+    return Response(generate_frames(video_source), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-# face count route
-@app.route("/count")
-def count():
-    return str(count_var)
 
-# detections route
-@app.route("/detections")
-def detections():
-    return str(csv_str)
+@socketio.on('send_updates')
+def emit_updates():
+    global count_var, csv_str, threat_type
+    socketio.emit('animal_count_update', {'count': count_var})
+    socketio.emit('detections_update', {'detections': csv_str})
+    socketio.emit('threat_update', {'threat': threat_type})
+    print('emitted updates from app.py')
 
-# threat route
-@app.route("/threat")
-def threat():
-    return str(threat_type)
 
 # farm route
 @app.route("/farm", methods = ['GET', 'POST'])
 def farm():
-
-    # logic for input field validation
     if request.method == 'POST':
         
-        if (request.form['ip'] == ''):
-            inv_feed ="No Video-Feed!"
-            return render_template('farm.html',var2 = inv_feed)
+        if (request.form['video_source'] == ''):
+            inval_feed ="No Video-Found"
+            return render_template('farm.html', var2 = inval_feed)
         
         else:
-            ip_address = request.form['ip']
-            ip_vd_feed = "Video-Feed"
-            return render_template('farm.html', ip_address = ip_address, var2 = ip_vd_feed)
+            video_source = request.form['video_source']
+            vd_feed = "Video-Feed"
+            return render_template('farm.html', video_source = video_source, var2 = vd_feed)
     
     if request.method == 'GET':
         return render_template('farm.html')
