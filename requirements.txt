@@ -6,3 +6,4 @@ flask-pymongo
 opencv-python
 ultralytics
 numpy
+python-dotenv

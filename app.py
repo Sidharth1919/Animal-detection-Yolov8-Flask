@@ -10,6 +10,8 @@ from ultralytics import YOLO
 import numpy as np
 from auth import app, login_manager, mongo, auth_bp
 from auth import login, signup, logout
+from dotenv import load_dotenv 
+import os
 
 # global variables
 count_var = 0 # variable to store the count of animals
@@ -18,10 +20,11 @@ detection_list = [] # list to store the detected classes
 csv_str = "none"
 class_index = -1
 
+load_dotenv()  # Load variables from .env
 
 # creating flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '10101'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') 
 
 login_manager.init_app(app)
 socketio = SocketIO(app)
@@ -49,11 +52,6 @@ def handle_update_class_index(json):
 
     print('received class index: ' + str(class_index))
     
-
-@socketio.on('stop_feed')
-def handle_stop_feed():
-    os.kill(os.getpid(), signal.SIGINT)
-
 
 VIDEO_FILE_PATH = "test2.mp4"  
 

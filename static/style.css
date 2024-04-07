@@ -60,7 +60,7 @@ body{
   flex-direction: row;
   justify-content: center;
   max-width:100%;
-  background-color:rgb(6, 45, 103);}
+  background-color:rgb(7, 59, 58);}
 
 /* Style each radio button and label as a card */
 .form-check {
@@ -144,8 +144,8 @@ body{
   background-color: rgb(237, 243, 243);
   border: 2px solid #000;
   border-radius: 30px;
-  box-shadow: rgb(6, 45, 103) 4px 4px 0 0;
-  color: rgb(6, 45, 103);
+  box-shadow: rgb(7, 59, 58) 4px 4px 0 0;
+  color: rgb(7, 59, 58);
   cursor: pointer;
   display: inline-block;
   font-weight: 600;
@@ -198,13 +198,13 @@ body{
 .signup-page h1 {
   text-align: center;
   margin-top: 0;
-  color: rgb(7, 48, 108);
+  color: rgb(7, 59, 58);
 }
 
 .signup-page form {
   display: flex;
   flex-direction: column;
-  color:  rgb(7, 48, 108);
+  color:  rgb(7, 59, 58);
 }
 
 
@@ -229,8 +229,8 @@ body{
   margin-top: 20px;
   padding: 10px 15px;
   border-radius: 30px;
-  box-shadow: rgb(6, 45, 103) 4px 4px 0 0;
-  color: rgb(6, 45, 103);
+  box-shadow: rgb(7, 59, 58) 4px 4px 0 0;
+  color: rgb(7, 59, 58);
   cursor: pointer;
   display: inline-block;
   font-weight: 600;
@@ -269,7 +269,7 @@ body{
   align-items: center;       /* Centers children along the cross axis (vertically) */
   flex-direction: column;    
   width: 50%;                /* Takes up half the width */
-  color: rgb(7, 48, 108);
+  color: rgb(7, 59, 58);
   font-weight: bold;
   font-size: 40px;
   padding: 5%;  
@@ -299,13 +299,13 @@ body{
 .login-page h1 {
   text-align: center;
   margin-top: 0;
-  color: rgb(7, 48, 108);
+  color: rgb(7, 59, 58);
 }
 
 .login-page form {
   display: flex;
   flex-direction: column;
-  color:  rgb(7, 48, 108);
+  color:  rgb(7, 59, 58);
 }
 
 .login-page label {
@@ -328,8 +328,8 @@ body{
   margin-top: 20px;
   padding: 10px 15px;
   border-radius: 30px;
-  box-shadow: rgb(6, 45, 103) 4px 4px 0 0;
-  color: rgb(6, 45, 103);
+  box-shadow: rgb(7, 59, 58) 4px 4px 0 0;
+  color: rgb(7, 59, 58);
   cursor: pointer;
   display: inline-block;
   font-weight: 600;

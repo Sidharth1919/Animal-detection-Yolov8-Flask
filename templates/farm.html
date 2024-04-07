@@ -13,12 +13,12 @@
   style="background-color: rgb(237, 243, 243);">
   <div style="display: flex; flex-direction: row;">
     <div style="width: 50vw; align-content: center;" >
-      <h1 style="font-weight: bold; font-size:8vh; color: rgb(6, 45, 103);" id="heading" class="text-center">Farm</h1>
+      <h1 style="font-weight: bold; font-size:8vh; color: rgb(7, 59, 58);" id="heading" class="text-center">Farm</h1>
     </div>
 
     <div class="fullform">
       <div class="form-contain mb-1 mt-1 text-center">
-        <label style="font-size: larger; color: rgb(6, 45, 103);" for="video_source" class="form-label"><strong>Select video
+        <label style="font-size: larger; color: rgb(7, 59, 58);" for="video_source" class="form-label"><strong>Select video
             source:</strong></label>
         <div class="form-control" style="border: none; padding: 0;">
           <div class="form-check">
@@ -43,7 +43,7 @@
       </div>
       <div class="tno">
         <div style="width: 50%;" class="mt-1 text-center">
-          <label style="font-size: larger;font-weight: bold; color: rgb(6, 45, 103);" id="number" for="totalCount">Total Number of Animals in
+          <label style="font-size: larger;font-weight: bold; color: rgb(7, 59, 58);" id="number" for="totalCount">Total Number of Animals in
             Farm:</label>
           <input placeholder="Enter number" type="number" class="form-control " id="totalCount" name="totalCount" min="0"> <br>
         </div>
@@ -54,9 +54,9 @@
     Please select a video source.
   </div>
   <div style="display: flex; justify-content: center;">
-    <button style="background-color: rgb(6,45,103);" type="submit" class="btn btn-dark m-2" value="submit" id="btn1">Start</button>
-    <button style="background-color: rgb(6,45,103);" type="button" class="btn btn-dark m-2" id="btn3" onclick="hidefeed()">Hide Video</button>
-    <button style="background-color: rgb(6,45,103);" type="button" class="btn btn-dark m-2" id="btn2" onclick="stopfeed()">End</button>
+    <button style="background-color: rgb(7, 59, 58);" type="submit" class="btn btn-dark m-2" value="submit" id="btn1">Start</button>
+    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn3" onclick="hidefeed()">Hide Video</button>
+    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn2" onclick="end()">End</button>
   </div>
 </form>
 
@@ -179,6 +179,10 @@
     }
   }
 
+  function end(){
+    window.location.href = "/";
+  }
+
 
   var video_source = "{{ video_source }}";
 
@@ -288,11 +292,6 @@
   });
 
 
-  // Function to stop feed, emitting a stop_feed event
-  function stopfeed() {
-    socket.emit('stop_feed');
-    console.log("feed stopped")
-  }
 
   // -------------------------------------------------------------------------------------------------------------//
 
