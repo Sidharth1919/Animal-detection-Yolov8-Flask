@@ -7,7 +7,10 @@
 body{
     background-color: rgb(237, 243, 243);
 }
-
+.navbar{
+  position: fixed;
+  width:100%;
+}
  #homebg {
     background-color: #ffffff; /* Set background color for left side */
     margin: 0; /* Remove default margin */
@@ -24,20 +27,75 @@ body{
     z-index: -1; /* Send the background behind other content */
     }
 #bgimg {
-    background-color: #ffffff; /* Set background color for left side */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    overflow-x: hidden; /* Hide horizontal overflow */
-    position: fixed; /* Fix the background */
-    top: 0; /* Position from top */
-    right: 0; /* Position from right */
-    width: 100%; /* Width of the background (adjust as needed) */
-    height: 100%; /* Full height */
-    background-image: url('/static/images/background2.jpg'); /* Background image */
-    background-size: cover; /* Cover the entire background */
-    background-repeat: no-repeat; /* Do not repeat the background image */
-    z-index: -1; /* Send the background behind other content */
+  width: 100vw; /* Set the width to cover half of the screen */
+  height: 50vh; /* Set the height to cover the full viewport height */
+  left: 0; /* Align the div to the left side of the viewport */
+  top: 0;
+  object-fit:cover;
+  object-position: center 50%;
+  z-index: -1;
+  position: relative;
 }
+/* ----------------------------farmpage-------------------------------- */
+.fullform {
+  display: flex; /* Allow for side-by-side arrangement */
+  flex-direction: row; /* Stack elements vertically */
+}
+.tno{
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+/* Style the container to look like a card */
+.form-control[style*="border: none"] { 
+  border: 1px solid #ced4da; /* Add a subtle border for card-like feel */
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-evenly;
+  width:50vw
+}
+
+/* Style each radio button and label as a card */
+.form-check {
+  display: block; /* Each option takes up its own line */
+  margin-bottom: 10px; 
+  flex: 0 0 30%; /* Each card will take up about 30% of the container's width */
+  margin: 5px;/* Add spacing between cards */
+}
+
+.form-check-input {
+  display: none; /* Hide the default radio button */
+}
+
+.form-check-label {
+  align-items: center;  /* Vertically center content */
+  padding: 10px 15px;
+  background-color: #f8f9fa; /* Light background for card look */
+  border-radius: 5px; 
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* Add a hover effect */
+  display: flex;         /* Make the label a block-level element  */
+  text-align: center; 
+  flex-direction: column; 
+}
+.form-check-label img { 
+  margin-bottom: 2vh; /* Adjust the spacing as needed */
+}
+/* Hover effect on cards */
+.form-check-label:hover {
+  background-color: #e9ecef; 
+}
+
+/* Style for selected card */
+.form-check-input:checked + .form-check-label {
+  background-color: #ddd; /* Or a highlight color of your choice */
+}
+/* ------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------- */
+
+
     #hometitle {
         padding-left: 5vw; /* or adjust as needed */
         max-width: 50%; /* Ensures it uses the full available width */
@@ -106,6 +164,8 @@ body{
     padding: 0 25px;
   }
 }
+
+/* ------------------------------------------------------------------------------------------------- */
 .signup-page {
   font-family: Arial, sans-serif;
   background-image: url('/static/images/signup.jpg');

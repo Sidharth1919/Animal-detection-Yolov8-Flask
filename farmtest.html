@@ -1,0 +1,81 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  </head>
+  <!-- create farm -->
+  <img src="" id="bgimg">
+  
+  <form class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm') }}" style="background-color: rgba(255, 255, 255, 0.8);">
+    <h1 id="heading" class="text-center">Farm</h1>
+    <div class="mb-3 mt-3">
+      <label for="video_source" class="form-label"><strong>Select video source:</strong></label>
+      <div class="form-control" style="border: none; padding: 0;">
+        <div class="form-check">
+          <input type="radio" id="webcam" name="video_source" value="0" class="form-check-input">
+          <label for="webcam" class="form-check-label">Webcam</label>
+        </div>
+        <div class="form-check">
+          <input type="radio" id="ipCamera" name="video_source" value="1" class="form-check-input">
+          <label for="ipCamera" class="form-check-label">IP Camera</label>
+        </div>
+        <div class="form-check">
+          <input type="radio" id="localFile" name="video_source" value="2" class="form-check-input">
+          <label for="localFile" class="form-check-label">Local File</label>
+        </div>
+      </div>
+    </div>
+    <label id="number" for="totalCount" style="font-weight: bold;">Total Number of Animals in Farm:</label>
+    <input type="number" class="form-control" id="totalCount" name="totalCount" min="0"> <br>
+    <button type="submit" class="btn btn-dark" value="submit" id="btn1">Start</button>
+    <button type="button" class="btn btn-dark" id="btn3" onclick="hidefeed()">Hide Video</button>
+    <button type="button" class="btn btn-dark" id="btn2" onclick="stopfeed()">End</button>
+  </form>
+  
+  <!-- real-time data display -->
+  
+  <div class="container border border-dark rounded my-5 p-5 text-center" id="todocont"
+    style="background-color: rgba(255, 255, 255, 0.8);">
+  
+    <!-- real-time animal-counting -->
+  
+    <h1 class="mt-5" style="padding-bottom: 0;">Data</h1>
+  
+  
+  
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Video Source</th>
+          <th>Farm</th>
+          <!-- <th>Animal type</th> -->
+          <th>In Farm</th>
+          <th id="animal">Number Of Animals in Farm</th>
+          <th>Threat detected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ video_source }}</td>
+          <td id="farm">None Selected</td>
+          <!-- <td id="type">none</td> -->
+          <td id="detections">None</td>
+          <td id="count">0</td>
+          <td id="threat">None</td>
+        </tr>
+      </tbody>
+    </table>
+    <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
+      The count has been reduced. Please check the farm!
+    </div>
+    <div id="threatMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
+      A THREAT HAS ENTERED YOUR FARM. PLEASE CHECK YOUR FARM!
+    </div>
+    <!-- real-time video-feed -->
+  
+    <h1 class="mt-5">{{ var2 }}</h1>
+  
+    {% if video_source %}
+    <img class="mt-3 rounded" src="{{ url_for('video_feed', video_source=video_source)}}" id="videoFeed" alt="cctvfotage" width="50%">
+    {% endif %}
+  
+  </div>

@@ -74,6 +74,7 @@ def generate_frames(input_source):
     elif input_source == 2:  # Video file
         cap = cv2.VideoCapture(VIDEO_FILE_PATH)
     else:
+        print('no source selected')
         return  # Handle error - TO DO
     
     if not cap.isOpened():
