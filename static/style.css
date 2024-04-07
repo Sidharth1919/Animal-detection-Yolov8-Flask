@@ -140,6 +140,8 @@ body{
   color:  rgb(7, 48, 108);
 }
 
+
+
 .signup-page label {
   margin-top: 10px;
 }
@@ -155,10 +157,10 @@ body{
 }
 
 .signup-page button {
+  background-color: rgb(237, 243, 243); /* Adjust background color as needed */
+  border: 2px solid #001851; /* Adjust border color as needed */
   margin-top: 20px;
-  padding: 10px;
-  background-color: rgb(237, 243, 243);
-  border: 2px solid #001851;
+  padding: 10px 15px;
   border-radius: 30px;
   box-shadow: rgb(6, 45, 103) 4px 4px 0 0;
   color: rgb(6, 45, 103);
@@ -166,9 +168,9 @@ body{
   display: inline-block;
   font-weight: 600;
   font-size: 18px;
-  line-height: 50px;
+  line-height: 25px;
   text-align: center;
-  touch-action: manipulation;
+  touch-action: manipulation
 }
 
 .signup-page button:hover {
@@ -185,13 +187,32 @@ body{
     padding: 0 25px;
   }
 }
-
-.login-page {
-  font-family: Arial, sans-serif;
+.left {
   background-image: url('/static/images/signup.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  width: 50%;
+}
+.right {
+  background-color: rgb(237, 243, 243);
+  font-family: Arial, sans-serif;
+  display: flex;             /* Establishes this container as a flex container */
+  justify-content: center;   /* Centers children along the main axis (horizontally) */
+  align-items: center;       /* Centers children along the cross axis (vertically) */
+  flex-direction: column;    
+  width: 50%;                /* Takes up half the width */
+  color: rgb(7, 48, 108);
+  font-weight: bold;
+  font-size: 40px;
+  padding: 5%;  
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000;
+  text-align: center;
+}
+
+
+.login-page {
+  font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -246,7 +267,7 @@ body{
   display: inline-block;
   font-weight: 600;
   font-size: 18px;
-  line-height: 50px;
+  line-height: 25px;
   text-align: center;
   touch-action: manipulation
 }
