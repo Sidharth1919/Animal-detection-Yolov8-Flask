@@ -6,8 +6,12 @@
 
 body{
     background-color: rgb(237, 243, 243);
+    overflow-x: hidden; /* Prevent horizontal scroll on the entire page */
 }
-
+.navbar{
+  position: fixed;
+  width:100%;
+}
  #homebg {
     background-color: #ffffff; /* Set background color for left side */
     margin: 0; /* Remove default margin */
@@ -24,20 +28,81 @@ body{
     z-index: -1; /* Send the background behind other content */
     }
 #bgimg {
-    background-color: #ffffff; /* Set background color for left side */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    overflow-x: hidden; /* Hide horizontal overflow */
-    position: fixed; /* Fix the background */
-    top: 0; /* Position from top */
-    right: 0; /* Position from right */
-    width: 100%; /* Width of the background (adjust as needed) */
-    height: 100%; /* Full height */
-    background-image: url('/static/images/background2.jpg'); /* Background image */
-    background-size: cover; /* Cover the entire background */
-    background-repeat: no-repeat; /* Do not repeat the background image */
-    z-index: -1; /* Send the background behind other content */
+  width: 100vw; /* Set the width to cover half of the screen */
+  height: 50vh; /* Set the height to cover the full viewport height */
+  left: 0; /* Align the div to the left side of the viewport */
+  top: 0;
+  object-fit:cover;
+  object-position: center 50%;
+  z-index: -1;
+  position: relative;
 }
+ 
+/* ----------------------------farmpage-------------------------------- */
+.fullform {
+  display: flex; /* Allow for side-by-side arrangement */
+  flex-direction: column; /* Stack elements vertically */
+}
+.tno{
+  width: 50vw;
+  display: flex;
+  justify-content: center;
+}
+.form-contain{
+  max-width: 95%;
+}
+/* Style the container to look like a card */
+.form-control[style*="border: none"] { 
+  border: 1px solid #ced4da; /* Add a subtle border for card-like feel */
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-width:100%;
+  background-color:rgb(7, 59, 58);}
+
+/* Style each radio button and label as a card */
+.form-check {
+  display: block; /* Each option takes up its own line */
+  margin-bottom: 10px; 
+  padding: 5px;
+  flex: 0 0 30%; /* Each card will take up about 30% of the container's width */
+  margin: 5px;/* Add spacing between cards */
+}
+
+.form-check-input {
+  display: none; /* Hide the default radio button */
+}
+
+.form-check-label {
+  align-items: center;  /* Vertically center content */
+  padding: 10px 15px;
+  background-color: #f8f9fa; /* Light background for card look */
+  border-radius: 5px; 
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* Add a hover effect */
+  display: flex;         /* Make the label a block-level element  */
+  text-align: center; 
+  flex-direction: column; 
+}
+.form-check-label img { 
+  margin-bottom: 2vh; /* Adjust the spacing as needed */
+}
+/* Hover effect on cards */
+.form-check-label:hover {
+  background-color: #e9ecef; 
+}
+
+/* Style for selected card */
+.form-check-input:checked + .form-check-label {
+  background-color: #ddd; /* Or a highlight color of your choice */
+}
+/* ------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------- */
+
+
     #hometitle {
         padding-left: 5vw; /* or adjust as needed */
         max-width: 50%; /* Ensures it uses the full available width */
@@ -79,8 +144,8 @@ body{
   background-color: rgb(237, 243, 243);
   border: 2px solid #000;
   border-radius: 30px;
-  box-shadow: rgb(6, 45, 103) 4px 4px 0 0;
-  color: rgb(6, 45, 103);
+  box-shadow: rgb(7, 59, 58) 4px 4px 0 0;
+  color: rgb(7, 59, 58);
   cursor: pointer;
   display: inline-block;
   font-weight: 600;
@@ -100,6 +165,188 @@ body{
   transform: translate(2px, 2px);
 }
 
+@media (min-width: 768px) {
+  .button-74 {
+    min-width: 120px;
+    padding: 0 25px;
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------- */
+.signup-page {
+  font-family: Arial, sans-serif;
+  background-image: url('/static/images/signup.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.signup-page .s1 {
+  background-color: rgba(255, 255, 255);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.signup-page h1 {
+  text-align: center;
+  margin-top: 0;
+  color: rgb(7, 59, 58);
+}
+
+.signup-page form {
+  display: flex;
+  flex-direction: column;
+  color:  rgb(7, 59, 58);
+}
+
+
+
+.signup-page label {
+  margin-top: 10px;
+}
+
+.signup-page input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.signup-page .form-actions {
+  display: flex;
+  justify-content:space-between;
+}
+
+.signup-page button {
+  background-color: rgb(237, 243, 243); /* Adjust background color as needed */
+  border: 2px solid #001851; /* Adjust border color as needed */
+  margin-top: 20px;
+  padding: 10px 15px;
+  border-radius: 30px;
+  box-shadow: rgb(7, 59, 58) 4px 4px 0 0;
+  color: rgb(7, 59, 58);
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+  text-align: center;
+  touch-action: manipulation
+}
+
+.signup-page button:hover {
+  background-color: #fff;
+}
+
+.signup-page button:active{
+  box-shadow: #ffac2f 2px 2px 0 0;
+  transform: translate(2px, 2px);
+}
+@media (min-width: 768px) {
+  .button-74 {
+    min-width: 120px;
+    padding: 0 25px;
+  }
+}
+.left {
+  background-image: url('/static/images/signup.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 50%;
+}
+.right {
+  background-color: rgb(237, 243, 243);
+  font-family: Arial, sans-serif;
+  display: flex;             /* Establishes this container as a flex container */
+  justify-content: center;   /* Centers children along the main axis (horizontally) */
+  align-items: center;       /* Centers children along the cross axis (vertically) */
+  flex-direction: column;    
+  width: 50%;                /* Takes up half the width */
+  color: rgb(7, 59, 58);
+  font-weight: bold;
+  font-size: 40px;
+  padding: 5%;  
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000;
+  text-align: center;
+}
+
+
+.login-page {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.login-page .s2 {
+  background-color: rgba(255, 255, 255);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.login-page h1 {
+  text-align: center;
+  margin-top: 0;
+  color: rgb(7, 59, 58);
+}
+
+.login-page form {
+  display: flex;
+  flex-direction: column;
+  color:  rgb(7, 59, 58);
+}
+
+.login-page label {
+  margin-top: 10px;
+}
+
+.login-page input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.login-page .form-actions {
+  display: flex;
+  justify-content:space-between;
+}
+
+.login-page button {
+  background-color: rgb(237, 243, 243); /* Adjust background color as needed */
+  border: 2px solid #001851; /* Adjust border color as needed */
+  margin-top: 20px;
+  padding: 10px 15px;
+  border-radius: 30px;
+  box-shadow: rgb(7, 59, 58) 4px 4px 0 0;
+  color: rgb(7, 59, 58);
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+  text-align: center;
+  touch-action: manipulation
+}
+
+.login-page button:hover {
+  background-color: #fff;
+}
+
+.login-page button:active{
+  box-shadow: #ffac2f 2px 2px 0 0;
+  transform: translate(2px, 2px);
+}
 @media (min-width: 768px) {
   .button-74 {
     min-width: 120px;

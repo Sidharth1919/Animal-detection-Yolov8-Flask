@@ -1,11 +1,17 @@
 # importing libraries
-from flask import Flask, render_template, Response, request # importing flask library for web app (render_template for rendering html files, Response for streaming video, request for getting the input from the user)
-from flask_socketio import SocketIO # importing socketio for real time communication between server and client
-import cv2 # importing opencv for image processing
-import os # importing os for killing the process
-import signal # importing signal for killing the process
-from ultralytics import YOLO # importing yolov8 for object detection
-import numpy as np # importing numpy for numerical operations
+from flask import Flask, render_template, Response, request
+from flask_login import login_required, current_user
+from flask_socketio import SocketIO
+from bson import ObjectId
+import os
+import signal
+import cv2
+from ultralytics import YOLO
+import numpy as np
+from auth import app, login_manager, mongo, auth_bp
+from auth import login, signup, logout
+from dotenv import load_dotenv 
+import os
 
 # global variables
 count_var = 0 # variable to store the count of animals
@@ -14,13 +20,20 @@ detection_list = [] # list to store the detected classes
 csv_str = "none"
 class_index = -1
 
+load_dotenv()  # Load variables from .env
 
 # creating flask app
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') 
+
+login_manager.init_app(app)
 socketio = SocketIO(app)
+app.register_blueprint(auth_bp)
+
 
 # home route
 @app.route("/")
+@login_required
 def index():
     return render_template('index.html')
 
@@ -29,12 +42,16 @@ def index():
 def handle_update_class_index(json):
     global class_index
     class_index = json.get('classIndex')
+    user_id = current_user.id  # Assuming current_user is available
+
+    if ObjectId.is_valid(user_id):
+        mongo.db.users.update_one(
+            {'_id': ObjectId(user_id)},
+            {'$set': {'selected_farm_animal': int(class_index)}}
+        )
+
     print('received class index: ' + str(class_index))
-
-@socketio.on('stop_feed')
-def handle_stop_feed():
-    os.kill(os.getpid(), signal.SIGINT)
-
+    
 
 VIDEO_FILE_PATH = "test2.mp4"  
 
@@ -55,6 +72,7 @@ def generate_frames(input_source):
     elif input_source == 2:  # Video file
         cap = cv2.VideoCapture(VIDEO_FILE_PATH)
     else:
+        print('no source selected')
         return  # Handle error - TO DO
     
     if not cap.isOpened():
@@ -74,7 +92,9 @@ def generate_frames(input_source):
         centr_pt_cur_fr = []
 
         results = model(frame) #Yolov8 model processes the frames
+        # print("results: ",results)
         result = results[0]
+        # print("result: ",result)
 
         # ------- to get the classes of the yolo model to filter out the animals---------------#
         classes = np.array(result.boxes.cls.cpu(),dtype="int")
@@ -205,6 +225,7 @@ def emit_updates():
 
 # farm route
 @app.route("/farm", methods = ['GET', 'POST'])
+@login_required
 def farm():
     if request.method == 'POST':
         

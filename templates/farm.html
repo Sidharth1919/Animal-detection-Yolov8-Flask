@@ -9,40 +9,65 @@
 <!-- create farm -->
 <img src="" id="bgimg">
 
-<form class="container border border-dark rounded my-5 p-5" method="post" action="{{ url_for('farm') }}" style="background-color: rgba(255, 255, 255, 0.8);">
-  <h1 id="heading" class="text-center">Farm</h1>
-  <div class="mb-3 mt-3">
-    <label for="video_source" class="form-label"><strong>Select video source:</strong></label>
-    <div class="form-control" style="border: none; padding: 0;">
-      <div class="form-check">
-        <input type="radio" id="webcam" name="video_source" value="0" class="form-check-input">
-        <label for="webcam" class="form-check-label">Webcam</label>
+<form class="border border-dark p-2" method="post" action="{{ url_for('farm') }}"
+  style="background-color: rgb(237, 243, 243);">
+  <div style="display: flex; flex-direction: row;">
+    <div style="width: 50vw; align-content: center;" >
+      <h1 style="font-weight: bold; font-size:8vh; color: rgb(7, 59, 58);" id="heading" class="text-center">Farm</h1>
+    </div>
+
+    <div class="fullform">
+      <div class="form-contain mb-1 mt-1 text-center">
+        <label style="font-size: larger; color: rgb(7, 59, 58);" for="video_source" class="form-label"><strong>Select video
+            source:</strong></label>
+        <div class="form-control" style="border: none; padding: 0;">
+          <div class="form-check">
+            <input type="radio" id="webcam" name="video_source" value="0" class="form-check-input">
+            <label for="webcam" class="form-check-label">
+              <img width="50" height="50" src="static/images/webcam.svg" alt="Webcam Icon">Webcam
+            </label>
+          </div>
+          <div class="form-check">
+            <input type="radio" id="ipCamera" name="video_source" value="1" class="form-check-input">
+            <label for="ipCamera" class="form-check-label">
+              <img width="50" height="50" src="static/images/cctv.svg" alt="Webcam Icon">CCTV
+            </label>
+          </div>
+          <div class="form-check">
+            <input type="radio" id="localFile" name="video_source" value="2" class="form-check-input">
+            <label for="localFile" class="form-check-label">
+              <img width="50" height="50" src="static/images/file.svg" alt="Webcam Icon">Local File
+            </label>
+          </div>
+        </div>
       </div>
-      <div class="form-check">
-        <input type="radio" id="ipCamera" name="video_source" value="1" class="form-check-input">
-        <label for="ipCamera" class="form-check-label">IP Camera</label>
-      </div>
-      <div class="form-check">
-        <input type="radio" id="localFile" name="video_source" value="2" class="form-check-input">
-        <label for="localFile" class="form-check-label">Local File</label>
+      <div class="tno">
+        <div style="width: 50%;" class="mt-1 text-center">
+          <label style="font-size: larger;font-weight: bold; color: rgb(7, 59, 58);" id="number" for="totalCount">Total Number of Animals in
+            Farm:</label>
+          <input placeholder="Enter number" type="number" class="form-control " id="totalCount" name="totalCount" min="0"> <br>
+        </div>
       </div>
     </div>
   </div>
-  <label id="number" for="totalCount" style="font-weight: bold;">Total Number of Animals in Farm:</label>
-  <input type="number" class="form-control" id="totalCount" name="totalCount" min="0"> <br>
-  <button type="submit" class="btn btn-dark" value="submit" id="btn1">Start</button>
-  <button type="button" class="btn btn-dark" id="btn3" onclick="hidefeed()">Hide Video</button>
-  <button type="button" class="btn btn-dark" id="btn2" onclick="stopfeed()">End</button>
+  <div id="errorMessage" style="display: none; color: red; text-align: center;">
+    Please select a video source.
+  </div>
+  <div style="display: flex; justify-content: center;">
+    <button style="background-color: rgb(7, 59, 58);" type="submit" class="btn btn-dark m-2" value="submit" id="btn1">Start</button>
+    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn3" onclick="hidefeed()">Hide Video</button>
+    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn2" onclick="end()">End</button>
+  </div>
 </form>
 
 <!-- real-time data display -->
 
-<div class="container border border-dark rounded my-5 p-5 text-center" id="todocont"
+<div class="container border border-dark rounded my-5 text-center" id="todocont"
   style="background-color: rgba(255, 255, 255, 0.8);">
 
   <!-- real-time animal-counting -->
 
-  <h1 class="mt-5" style="padding-bottom: 0;">Data</h1>
+  <h1 class="mt-5" style="padding-bottom: 0;">Farm Data</h1>
 
 
 
@@ -79,18 +104,34 @@
   <h1 class="mt-5">{{ var2 }}</h1>
 
   {% if video_source %}
-  <img class="mt-3 rounded" src="{{ url_for('video_feed', video_source=video_source)}}" id="videoFeed" alt="cctvfotage" width="50%">
+  <img id="data" class="mt-3 mb-3 rounded" src="{{ url_for('video_feed', video_source=video_source)}}" id="videoFeed"
+    alt="cctvfotage" width="50%">
   {% endif %}
 
 </div>
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
+<script>
+  document.getElementById('btn1').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default form submission
 
+    const videoSourceSelected = document.querySelector('input[name="video_source"]:checked');
+
+    if (!videoSourceSelected) {
+      document.getElementById('errorMessage').style.display = 'block'; // Show message
+    } else {
+      // Form is valid; you can proceed with form submission logic
+      const form = this.closest('form');
+      form.submit();
+    }
+  });
+</script>
 <script>
   // Farm value from index.html
   window.onload = function () {
     // Retrieve selected farm from local storage
-    const selectedFarm = localStorage.getItem('selectedFarm');
+    const selectedFarm = localStorage.getItem('selectedFarm')
+
 
     // Update the table cell
     if (selectedFarm) {
@@ -105,7 +146,7 @@
       if (tableHeading && selectedFarm !== "-") {
         tableHeading.textContent = `Number Of ${selectedFarm}'s in Farm`;
         Heading.textContent = `${selectedFarm} Farm`;
-        number.textContent = `Total Number of ${selectedFarm}'s in Farm`;
+        number.textContent = `Total Number of ${selectedFarm}'s in Farm: `;
         bgimg.src = `static/images/${selectedFarm.toLowerCase()}-background.jpg`;
       }
 
@@ -138,6 +179,10 @@
     }
   }
 
+  function end(){
+    window.location.href = "/";
+  }
+
 
   var video_source = "{{ video_source }}";
 
@@ -158,16 +203,20 @@
 
   // starts only when the video is on
   if (video_source == "0" || video_source == "1" || video_source == "2") {
+    document.getElementById('data').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });;
     function updateinfo() {
-        var videoFeed = document.getElementById('videoFeed');
-        if (videoFeed) {
-            videoFeed.src = "{{ url_for('video_feed', video_source=video_source)}}";
-        }
+      var videoFeed = document.getElementById('videoFeed');
+      if (videoFeed) {
+        videoFeed.src = "{{ url_for('video_feed', video_source=video_source)}}";
+      }
     }
-} else {
+  } else {
     console.log("Video is off. No updates to count, type, or threat.");
-}
-  // Call updatecount every 500 milliseconds (0.5 seconds)
+  }
+  // Call updateinfo every 500 milliseconds (0.5 seconds)
   setInterval(updateinfo, 500);
 
   // -------------------------------------------------socketio------------------------------------------------------------//
@@ -175,79 +224,74 @@
   console.log("connected to socket")
 
   // COUNT UPDATION
-  socket.on('animal_count_update', function(data) {
-      document.getElementById('count').innerHTML = data.count;
-      const totalCountInput = document.getElementById('totalCount');
-        const storedValue = totalCountInput.value;
+  socket.on('animal_count_update', function (data) {
+    document.getElementById('count').innerHTML = data.count;
+    const totalCountInput = document.getElementById('totalCount');
+    const storedValue = totalCountInput.value;
 
-        if (data.count < storedValue) {
-          if (!isCountReducedTimerActive) {
-            isCountReducedTimerActive = true;
-            // Start a timer of 5 seconds before logging and showing the error message
-            countReductionTimeout = setTimeout(function () {
-              console.log("count reduced");
-              // sendAlertEmail("Animal count has reduced! Please check the farm.");
-              document.getElementById('errorMessage').style.display = "block"; // Show the error message
-              isCountReducedTimerActive = false;
-            }, 5000);
-          }
-        } else {
-          // If current count is not less than storedValue, reset the timer and hide the error message
-          if (isCountReducedTimerActive) {
-            clearTimeout(countReductionTimeout);
-            document.getElementById('errorMessage').style.display = "none"; // Hide the error message
-            isCountReducedTimerActive = false;
-          } else if (data.count == storedValue) {
-            // If the current count is exactly equal to the stored value, ensure the error message is hidden
-            document.getElementById('errorMessage').style.display = "none";
-          }
-        }
+    if (data.count < storedValue) {
+      if (!isCountReducedTimerActive) {
+        isCountReducedTimerActive = true;
+        // Start a timer of 5 seconds before logging and showing the error message
+        countReductionTimeout = setTimeout(function () {
+          console.log("count reduced");
+          // sendAlertEmail("Animal count has reduced! Please check the farm.");
+          document.getElementById('errorMessage').style.display = "block"; // Show the error message
+          isCountReducedTimerActive = false;
+        }, 5000);
+      }
+    } else {
+      // If current count is not less than storedValue, reset the timer and hide the error message
+      if (isCountReducedTimerActive) {
+        clearTimeout(countReductionTimeout);
+        document.getElementById('errorMessage').style.display = "none"; // Hide the error message
+        isCountReducedTimerActive = false;
+      } else if (data.count == storedValue) {
+        // If the current count is exactly equal to the stored value, ensure the error message is hidden
+        document.getElementById('errorMessage').style.display = "none";
+      }
+    }
 
-      console.log("recieved count")
+    console.log("recieved count")
   });
 
   // DETECTION UPDATION
-  socket.on('detections_update', function(data) {
-      document.getElementById('detections').innerHTML = data.detections;
-      console.log("recieved detections")
+  socket.on('detections_update', function (data) {
+    document.getElementById('detections').innerHTML = data.detections;
+    console.log("recieved detections")
   });
 
   // THREAT UPDATION
-  socket.on('threat_update', function(data) {
+  socket.on('threat_update', function (data) {
+    document.getElementById('threat').innerHTML = data.threat;
+    const threatclass = data.threat;
+    if (threatclass !== "None") {
+      document.getElementById('threatMessage').style.display = "block";
       document.getElementById('threat').innerHTML = data.threat;
-      const threatclass = data.threat;
-      if (threatclass !== "None") {
-            document.getElementById('threatMessage').style.display = "block";
-            document.getElementById('threat').innerHTML = data.threat;
 
-            // Start the threat timer if it's not already running
-            if (!threatTimer) {
-              threatTimer = setTimeout(function () {
-                const currentTime = getCurrentFormattedTime();
-                sendAlertEmail(`Threat (${threatclass}) detected in the farm at ${currentTime}. Please check the farm!`);
-                // Reset the timer
-              }, threatAlertDelay);
-            }
+      // Start the threat timer if it's not already running
+      if (!threatTimer) {
+        threatTimer = setTimeout(function () {
+          const currentTime = getCurrentFormattedTime();
+          sendAlertEmail(`Threat (${threatclass}) detected in the farm at ${currentTime}. Please check the farm!`);
+          // Reset the timer
+        }, threatAlertDelay);
+      }
 
-          } else {
-            document.getElementById('threatMessage').style.display = "none";
-            document.getElementById('threat').innerHTML = "none";
+    } else {
+      document.getElementById('threatMessage').style.display = "none";
+      document.getElementById('threat').innerHTML = "none";
 
-            // If there is no threat, clear the timer (if running)
-            if (threatTimer) {
-              clearTimeout(threatTimer);
-              threatTimer = null;
-            }
-          }
-      console.log("recieved threat")
+      // If there is no threat, clear the timer (if running)
+      if (threatTimer) {
+        clearTimeout(threatTimer);
+        threatTimer = null;
+      }
+    }
+    console.log("recieved threat")
   });
 
 
-  // Function to stop feed, emitting a stop_feed event
-  function stopfeed() {
-      socket.emit('stop_feed');
-      console.log("feed stopped")
-  }
 
   // -------------------------------------------------------------------------------------------------------------//
 
