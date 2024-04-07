@@ -9,12 +9,12 @@
 <!-- create farm -->
 <img src="" id="bgimg">
 
-<form class="border border-dark rounded p-2" method="post" action="{{ url_for('farm') }}"
+<form class="border border-dark p-2" method="post" action="{{ url_for('farm') }}"
   style="background-color: rgba(255, 255, 255, 0.8);">
   <h1 id="heading" class="text-center">Farm</h1>
   <div class="fullform">
     <div class="mb-3 mt-3 text-center">
-      <label for="video_source" class="form-label"><strong>Select video source:</strong></label>
+      <label style="font-size: larger;" for="video_source" class="form-label"><strong>Select video source:</strong></label>
       <div class="form-control" style="border: none; padding: 0;">
         <div class="form-check">
           <input type="radio" id="webcam" name="video_source" value="0" class="form-check-input">
@@ -38,7 +38,7 @@
     </div>
     <div class="tno">
       <div style="width: 50%;" class="mb-3 mt-3 text-center">
-        <label id="number" for="totalCount" style="font-weight: bold;">Total Number of Animals in Farm:</label>
+        <label style="font-size: larger;font-weight: bold;" id="number" for="totalCount">Total Number of Animals in Farm:</label>
         <input type="number" class="form-control mt-5" id="totalCount" name="totalCount" min="0"> <br>
       </div>
     </div>
@@ -60,7 +60,7 @@
 
   <!-- real-time animal-counting -->
 
-  <h1 class="mt-5" style="padding-bottom: 0;">Data</h1>
+  <h1 class="mt-5" style="padding-bottom: 0;">Farm Data</h1>
 
 
 
@@ -139,7 +139,7 @@
       if (tableHeading && selectedFarm !== "-") {
         tableHeading.textContent = `Number Of ${selectedFarm}'s in Farm`;
         Heading.textContent = `${selectedFarm} Farm`;
-        number.textContent = `Total Number of ${selectedFarm}'s in Farm`;
+        number.textContent = `Total Number of ${selectedFarm}'s in Farm: `;
         bgimg.src = `static/images/${selectedFarm.toLowerCase()}-background.jpg`;
       }
 
