@@ -6,6 +6,7 @@
 
 body{
     background-color: rgb(237, 243, 243);
+    overflow-x: hidden; /* Prevent horizontal scroll on the entire page */
 }
 .navbar{
   position: fixed;
@@ -36,16 +37,19 @@ body{
   z-index: -1;
   position: relative;
 }
-
+ 
 /* ----------------------------farmpage-------------------------------- */
 .fullform {
   display: flex; /* Allow for side-by-side arrangement */
-  flex-direction: row; /* Stack elements vertically */
+  flex-direction: column; /* Stack elements vertically */
 }
 .tno{
-  width: 50%;
+  width: 50vw;
   display: flex;
   justify-content: center;
+}
+.form-contain{
+  max-width: 95%;
 }
 /* Style the container to look like a card */
 .form-control[style*="border: none"] { 
@@ -53,14 +57,16 @@ body{
   padding: 15px;
   border-radius: 5px;
   display: flex;
-  justify-content: space-evenly;
-  width:50vw
-}
+  flex-direction: row;
+  justify-content: center;
+  max-width:100%;
+  background-color:rgb(6, 45, 103);}
 
 /* Style each radio button and label as a card */
 .form-check {
   display: block; /* Each option takes up its own line */
   margin-bottom: 10px; 
+  padding: 5px;
   flex: 0 0 30%; /* Each card will take up about 30% of the container's width */
   margin: 5px;/* Add spacing between cards */
 }
