@@ -26,6 +26,15 @@
                             <button type="button" onclick="location.href='/login'">Already a User?</button>
                         </div>
                     </form>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    <ul style="padding-top: 5%; color: crimson;" class="flashes">
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
                 </div>
             </div>
         </div>

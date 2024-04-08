@@ -47,9 +47,15 @@ body{
   width: 50vw;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .form-contain{
   max-width: 95%;
+}
+.tno .form-control {
+  text-align: center;
+  font-weight: bold;
+  color: rgb(7, 59, 58);
 }
 /* Style the container to look like a card */
 .form-control[style*="border: none"] { 
@@ -60,7 +66,8 @@ body{
   flex-direction: row;
   justify-content: center;
   max-width:100%;
-  background-color:rgb(7, 59, 58);}
+  background-color:rgb(7, 59, 58);
+}
 
 /* Style each radio button and label as a card */
 .form-check {
@@ -353,3 +360,5 @@ body{
     padding: 0 25px;
   }
 }
+
+/* -------------------------------------------------------------------------- */
