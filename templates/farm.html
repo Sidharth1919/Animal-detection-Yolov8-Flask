@@ -6,19 +6,21 @@
   <link rel="stylesheet" type="text/css" href="../static/style.css">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
-<!-- create farm -->
+
+
 <img src="" id="bgimg">
 
 <form class="border border-dark p-2" method="post" action="{{ url_for('farm') }}"
   style="background-color: rgb(237, 243, 243);">
   <div style="display: flex; flex-direction: row;">
-    <div style="width: 50vw; align-content: center;" >
+    <div style="width: 50vw; align-content: center;">
       <h1 style="font-weight: bold; font-size:8vh; color: rgb(7, 59, 58);" id="heading" class="text-center">Farm</h1>
     </div>
 
     <div class="fullform">
       <div class="form-contain mb-1 mt-1 text-center">
-        <label style="font-size: larger; color: rgb(7, 59, 58);" for="video_source" class="form-label"><strong>Select video
+        <label style="font-size: larger; color: rgb(7, 59, 58);" for="video_source" class="form-label"><strong>Select
+            video
             source:</strong></label>
         <div class="form-control" style="border: none; padding: 0;">
           <div class="form-check">
@@ -30,46 +32,47 @@
           <div class="form-check">
             <input type="radio" id="ipCamera" name="video_source" value="1" class="form-check-input">
             <label for="ipCamera" class="form-check-label">
-              <img width="50" height="50" src="static/images/cctv.svg" alt="Webcam Icon">CCTV
+              <img width="50" height="50" src="static/images/cctv.svg" alt="CCTV Icon">CCTV
             </label>
           </div>
           <div class="form-check">
-            <input type="radio" id="localFile" name="video_source" value="2" class="form-check-input">
+            <input type="radio" id="localFile" name="video_source" value="2" class="form-check-input"
+              onchange="handleLocalFileSelect()">
             <label for="localFile" class="form-check-label">
-              <img width="50" height="50" src="static/images/file.svg" alt="Webcam Icon">Local File
+              <img width="50" height="50" src="static/images/file.svg" alt="File Icon">Local File
             </label>
           </div>
         </div>
       </div>
       <div class="tno">
         <div style="width: 50%;" class="mt-1 text-center">
-          <label style="font-size: larger;font-weight: bold; color: rgb(7, 59, 58);" id="number" for="totalCount">Total Number of Animals in
+          <label style="font-size: larger;font-weight: bold; color: rgb(7, 59, 58);" id="number" for="totalCount">Total
+            Number of Animals in
             Farm:</label>
-          <input placeholder="Enter number" type="number" class="form-control " id="totalCount" name="totalCount" min="0"> <br>
+          <input placeholder="Enter number" type="number" class="form-control " id="totalCount" name="totalCount"
+            min="0"> <br>
         </div>
       </div>
     </div>
   </div>
-  <div id="errorMessage" style="display: none; color: red; text-align: center;">
+  <div id="errorMessagesource" style="display: none; color: red; text-align: center;">
     Please select a video source.
   </div>
   <div style="display: flex; justify-content: center;">
-    <button style="background-color: rgb(7, 59, 58);" type="submit" class="btn btn-dark m-2" value="submit" id="btn1">Start</button>
-    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn3" onclick="hidefeed()">Hide Video</button>
-    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn2" onclick="end()">End</button>
+    <button style="background-color: rgb(7, 59, 58);" type="submit" class="btn btn-dark m-2" value="submit"
+      id="btn1">Start</button>
+    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn3"
+      onclick="hidefeed()">Hide Video</button>
+    <button style="background-color: rgb(7, 59, 58);" type="button" class="btn btn-dark m-2" id="btn2"
+      onclick="end()">End</button>
   </div>
 </form>
 
-<!-- real-time data display -->
 
 <div class="container border border-dark rounded my-5 text-center" id="todocont"
   style="background-color: rgba(255, 255, 255, 0.8);">
 
-  <!-- real-time animal-counting -->
-
   <h1 class="mt-5" style="padding-bottom: 0;">Farm Data</h1>
-
-
 
   <table class="table table-hover">
     <thead>
@@ -84,9 +87,8 @@
     </thead>
     <tbody>
       <tr>
-        <td>{{ video_source }}</td>
+        <td id="video-source">None</td>
         <td id="farm">None Selected</td>
-        <!-- <td id="type">none</td> -->
         <td id="detections">None</td>
         <td id="count">0</td>
         <td id="threat">None</td>
@@ -99,7 +101,6 @@
   <div id="threatMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
     A THREAT HAS ENTERED YOUR FARM. PLEASE CHECK YOUR FARM!
   </div>
-  <!-- real-time video-feed -->
 
   <h1 class="mt-5">{{ var2 }}</h1>
 
@@ -118,13 +119,30 @@
     const videoSourceSelected = document.querySelector('input[name="video_source"]:checked');
 
     if (!videoSourceSelected) {
-      document.getElementById('errorMessage').style.display = 'block'; // Show message
+      document.getElementById('errorMessagesource').style.display = 'block'; // Show message
     } else {
       // Form is valid; you can proceed with form submission logic
       const form = this.closest('form');
       form.submit();
     }
   });
+</script>
+<script>
+  function handleLocalFileSelect() {
+    const localFileInput = document.getElementById('localFile');
+    if (localFileInput.checked) {
+      // Open the file browser when the "Local File" radio button is selected
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.addEventListener('change', (event) => {
+        const selectedFile = event.target.files[0];
+        // Emit the file path to the server using Socket.IO
+        socket.emit('video_file_selected', selectedFile.name);
+        console.log('Selected file:', selectedFile.name);
+      });
+      fileInput.click();
+    }
+  }
 </script>
 <script>
   // Farm value from index.html
@@ -179,7 +197,7 @@
     }
   }
 
-  function end(){
+  function end() {
     window.location.href = "/";
   }
 
@@ -198,7 +216,16 @@
 
   var isCountReducedTimerActive = false;
   var countReductionTimeout;
-
+  const video = document.getElementById('video-source')
+  if (video_source == "0") {
+    video.textContent = 'Webcam'
+  }
+  if (video_source == "1") {
+    video.textContent = 'IP Camera'
+  }
+  if (video_source == "2") {
+    video.textContent = 'Local file'
+  }
 
 
   // starts only when the video is on
@@ -207,6 +234,7 @@
       behavior: 'smooth',
       block: 'start'
     });;
+
     function updateinfo() {
       var videoFeed = document.getElementById('videoFeed');
       if (videoFeed) {

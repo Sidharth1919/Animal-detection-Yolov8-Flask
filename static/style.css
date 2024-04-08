@@ -96,7 +96,7 @@ body{
 
 /* Style for selected card */
 .form-check-input:checked + .form-check-label {
-  background-color: #ddd; /* Or a highlight color of your choice */
+  background-color: #c0f3c0; /* Or a highlight color of your choice */
 }
 /* ------------------------------------------------------------------------- */
 

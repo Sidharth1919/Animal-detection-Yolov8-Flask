@@ -53,7 +53,14 @@ def handle_update_class_index(json):
     print('received class index: ' + str(class_index))
     
 
-VIDEO_FILE_PATH = "test2.mp4"  
+VIDEO_FILE_PATH = None
+
+@socketio.on('video_file_selected')
+def handle_video_file_selected(video_file_name):
+    global VIDEO_FILE_PATH 
+    video_file_path = os.path.join('static/uploads/', video_file_name)
+    VIDEO_FILE_PATH = video_file_path
+    cap = cv2.VideoCapture(VIDEO_FILE_PATH)
 
 
 def generate_frames(input_source):
