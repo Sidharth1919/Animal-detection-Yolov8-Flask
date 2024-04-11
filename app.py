@@ -12,6 +12,7 @@ from auth import app, login_manager, mongo, auth_bp
 from auth import login, signup, logout
 from dotenv import load_dotenv 
 import os
+from datetime import datetime
 
 # global variables
 count_var = 0 # variable to store the count of animals
@@ -63,13 +64,14 @@ def handle_video_file_selected(video_file_name):
     cap = cv2.VideoCapture(VIDEO_FILE_PATH)
 
 
-def generate_frames(input_source):
+def generate_frames(input_source, user_id):
 
     # access the global variable
     global count_var
     global threat_type
     global detection_list
     global csv_str
+    global class_index
     model = YOLO("yolov8n.pt")
 
     if input_source == 0:  # Webcam
@@ -78,13 +80,12 @@ def generate_frames(input_source):
         cap = cv2.VideoCapture('http://192.168.240.29:4747/video')
     elif input_source == 2:  # Video file
         cap = cv2.VideoCapture(VIDEO_FILE_PATH)
-    else:
-        print('no source selected')
-        return  # Handle error - TO DO
+    elif input_source not in [0, 1, 2]:  # Validate input source
+        return "Invalid video source, please enter 0, 1, or 2"
     
     if not cap.isOpened():
         print("Error opening video stream or file")
-        return  # Handle error - TO DO
+        return "Error opening video stream or file. Please check the source or file integrity."
     while True:
 
         # ---------- capturing frames-----------#
@@ -155,6 +156,46 @@ def generate_frames(input_source):
 
         threat_type = ", ".join(threat_types) if threat_types else "None"
 
+# ---------------------------------------------------------------------------------------
+
+        try:
+            if user_id is not None and ObjectId.is_valid(user_id):
+                timestamp = datetime.now()
+                
+                for i in idx:
+                    detected_class = names[classes[i]]
+                    detection = {
+                        "timestamp": timestamp,
+                        "detected_class": detected_class,
+                        "count": count_var  # Add the count
+                    }
+                    user_collection = mongo.db[f"user_{user_id}"]
+
+                    user_collection.update_one(
+                        {"user_id": ObjectId(user_id), "farm_index": int(class_index), "video_source": input_source},
+                        {"$push": {"detections": detection}},
+                        upsert=True
+                    )
+
+                for threat in threat_types:
+                    threat_data = {
+                        "timestamp": timestamp,
+                        "threat_type": threat
+                    }
+                    user_collection = mongo.db[f"user_{user_id}"]
+
+                    user_collection.update_one(
+                        {"user_id": ObjectId(user_id), "farm_index": int(class_index), "video_source": input_source},
+                        {"$push": {"threats": threat_data}},
+                        upsert=True
+                    )
+            else:
+                print("User ID is None or invalid")
+                continue
+        except Exception as e:
+            print(f"Error occurred in generate_frames: {e}")
+            continue
+
         # ----------- bounding boxes for animal detections---------------#
         bbox = [] 
         for i in idx:
@@ -217,8 +258,10 @@ def video_feed():
         video_source = int(video_source)
     except ValueError:
         return "Invalid video source, please enter 0, 1, or 2"
+    user_id = str(current_user.id)
+    print('user_id:', user_id)
 
-    return Response(generate_frames(video_source), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generate_frames(video_source, user_id), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @socketio.on('send_updates')

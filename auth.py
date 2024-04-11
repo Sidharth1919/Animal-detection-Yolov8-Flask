@@ -40,7 +40,7 @@ def load_user(user_id):
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return render_template('index.html', user=current_user)
 
     if request.method == 'POST':
         email = request.form.get('email')
@@ -48,9 +48,9 @@ def login():
         user_document = mongo.db.users.find_one({'email': email})
 
         if user_document and check_password_hash(user_document['password'], password):
-            user = User(user_document['_id'], user_document['email'], user_document.get('username', '')) 
+            user = User(user_document['_id'], user_document['email'], user_document.get('username', ''))
             login_user(user)
-            return redirect(url_for('index'))
+            return render_template('index.html', user=current_user), 200
         else:
             flash('Invalid email/password combination')
 
@@ -61,13 +61,13 @@ def signup():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        username = request.form.get('username') 
+        username = request.form.get('username')
         existing_user = mongo.db.users.find_one({'$or': [{'email': email}, {'username': username}]})
 
         if existing_user is None:
             hashed_password = generate_password_hash(password)
             mongo.db.users.insert_one({'email': email, 'password': hashed_password, 'username': username})
-            return redirect(url_for('auth.login'))
+            return render_template('login.html')  # Render the login template directly
         else:
             flash('Email or username already exists')
 
