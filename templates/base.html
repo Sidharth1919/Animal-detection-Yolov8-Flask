@@ -24,6 +24,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="/farm">Farm</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('dashboard', user_id=current_user.id) }}">Dashboard</a>
+            </li>
         </div>
         <div class="navbar-nav ml-auto">
             <li class="nav-item">

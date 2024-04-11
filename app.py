@@ -162,7 +162,7 @@ def generate_frames(input_source, user_id):
             if user_id is not None and ObjectId.is_valid(user_id):
                 timestamp = datetime.now()
                 
-                for i in idx:
+                for i in range(len(classes)):
                     detected_class = names[classes[i]]
                     detection = {
                         "timestamp": timestamp,
@@ -290,7 +290,81 @@ def farm():
     
     if request.method == 'GET':
         return render_template('farm.html')
+    
+@app.route('/dashboard/<user_id>')
+@login_required
+def dashboard(user_id):
+    user_collection = mongo.db[f"user_{user_id}"]
+    farm_data = {}
 
+    # Cow Farm (index 19)
+    cow_farm_data = user_collection.find_one({"farm_index": 19})
+    if cow_farm_data:
+        farm_data["Cow Farm"] = process_farm_data(cow_farm_data)
+
+    # Sheep Farm (index 18)
+    sheep_farm_data = user_collection.find_one({"farm_index": 18})
+    if sheep_farm_data:
+        farm_data["Sheep Farm"] = process_farm_data(sheep_farm_data)
+
+    # Horse Farm (index 17)
+    horse_farm_data = user_collection.find_one({"farm_index": 17})
+    if horse_farm_data:
+        farm_data["Horse Farm"] = process_farm_data(horse_farm_data)
+
+    if not farm_data:
+        return render_template('dashboard.html', error='No data available for the user.')
+
+    return render_template('dashboard.html', farm_data=farm_data, error=None)
+def process_farm_data(farm_data):
+    # Prepare the data for the tables
+    detections = farm_data.get('detections', [])
+    video_source_counts = farm_data.get('video_source_counts', {})
+    threats = farm_data.get('threats', [])
+
+    # Animal Detection Data
+    animal_detection_data = {}
+    for detection in detections:
+        animal_type = detection['detected_class']
+        count = detection['count']
+        animal_detection_data[animal_type] = animal_detection_data.get(animal_type, 0) + count
+
+    # Animal Count Over Time Data
+    animal_count_data = [
+        {'timestamp': detection['timestamp'], 'detections': detection['detected_class'], 'count': detection['count']}
+        for detection in detections
+    ]
+
+    # Threat Detection Data
+    threat_detection_data = [
+        {'timestamp': threat['timestamp'], 'threat_type': threat['threat_type']}
+        for threat in threats
+    ]
+
+    # Video Source Data
+    video_source_data = video_source_counts
+
+    # Summary Statistics
+    if animal_detection_data:  # Check if animal_detection_data is not empty
+        animal_counts = animal_detection_data.values()
+        total_animals = sum(animal_counts)
+        most_common_animal = max(animal_detection_data, key=animal_detection_data.get)
+    else:
+        total_animals = 0
+        most_common_animal = "None"
+
+    most_common_threat = max((threat['threat_type'] for threat in threat_detection_data), key=(
+        lambda x: sum(1 for t in threat_detection_data if t['threat_type'] == x)), default='None')
+
+    return {
+        'animal_detection_data': animal_detection_data,
+        'animal_count_data': animal_count_data,
+        'threat_detection_data': threat_detection_data,
+        'video_source_data': video_source_data,
+        'total_animals': total_animals,
+        'most_common_animal': most_common_animal,
+        'most_common_threat': most_common_threat
+    }
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
