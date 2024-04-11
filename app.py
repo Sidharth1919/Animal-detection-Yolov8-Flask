@@ -10,7 +10,6 @@ from ultralytics import YOLO
 import numpy as np
 from auth import app, login_manager, mongo, auth_bp
 from auth import login, signup, logout
-from dotenv import load_dotenv 
 import os
 from datetime import datetime
 
@@ -21,11 +20,10 @@ detection_list = [] # list to store the detected classes
 csv_str = "none"
 class_index = -1
 
-load_dotenv()  # Load variables from .env
 
 # creating flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') 
+app.config['SECRET_KEY'] = '1010'
 
 login_manager.init_app(app)
 socketio = SocketIO(app)
