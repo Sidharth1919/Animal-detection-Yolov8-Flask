@@ -6,39 +6,56 @@
   <link rel="stylesheet" type="text/css" href="../static/style.css">
 </head>
 <!-- heading -->
-<div id="homebg">
-  <img src="">
-</div>
-<div id="hometitle" class="container  text-left>
+<div style="height: 100vh; display: flex; flex-direction: row;">
+
+  <div id="hometitle" class="container  text-left>
   <i class=" fa-solid fa-camera-cctv"></i>
-  <h1 class="display-3 custom-border"
-    style="color: rgb(7, 59, 58); font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 250px;">
-    ANIMAL MONITORING AND THREAT DETECTION SYSTEM
-  </h1>
-  <!-- <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1> -->
-  <form id="farmForm" action="/set_class_index" method="post">
-    <label for="farm" style="font-weight: bold;">Select Farm:</label>
-    <select name="farm" id="farmSelect">
-      <option>-</option>
-      <option value="19">Cow</option>
-      <option value="18">Sheep</option>
-      <option value="17">Horse</option>
-    </select>
-    <div id="errorMessage"
-      style="display: none; background-color: white; color: black; border: 1px solid black; padding: 10px; margin-top: 10px;">
-      Please select a valid farm from the dropdown.
-    </div>
-    <!-- Hidden input for class index -->
-    <input type="hidden" id="classIndexInput" name="classIndex" value="">
-    <br><br>
-    <button href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton" style="font-weight: bold;"
-      type="submit">Get Started</button>
-  </form>
+    <h1 class="display-3 custom-border"
+      style="color: rgb(7, 59, 58); font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 250px;">
+      ANIMAL MONITORING AND THREAT DETECTION SYSTEM
+    </h1>
+    <!-- <h1 class="display-3 my-3"><b>Animal Monitoring and Threat Detection System</b></h1> -->
+    <form id="farmForm" action="/set_class_index" method="post">
+      <label for="farm" style="font-weight: bold;">Select Farm:</label>
+      <select name="farm" id="farmSelect">
+        <option>-</option>
+        <option value="19">Cow</option>
+        <option value="18">Sheep</option>
+        <option value="17">Horse</option>
+      </select>
+      <div id="errorMessage"
+        style="display: none; background-color: white; color: black; border: 1px solid black; padding: 10px; margin-top: 10px;">
+        Please select a valid farm from the dropdown.
+      </div>
+      <!-- Hidden input for class index -->
+      <input type="hidden" id="classIndexInput" name="classIndex" value="">
+      <br><br>
+      <button href="/farm" class="btn btn-outline-dark btn-lg my-5" id="getStartedButton" style="font-weight: bold;"
+        type="submit">Get Started</button>
+    </form>
+
+  </div>
+  <div  id="homebg">
+    <img src="">
+  </div>
+</div>
+
+<div style="height: 100vh; display: flex; flex-direction: row;">
+  <div id="homebg">
+    <img src="">
+  </div>
+  <div style="width: 50%; text-align: center;">
+    <h1 class="display-3 custom-border text-center"
+      style="color: rgb(7, 59, 58); font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding-top: 200px;">
+      ABOUT US</h1>
+      <h4 style="color: rgb(7, 59, 58); padding-left: 10%; padding-right: 10%; ">At Animal Monitoring and Threat Detection System, our dedication lies in optimizing farm animal management through state-of-the-art technology. Specializing in services such as animal detection and count, threat detection, and real-time alerts, we provide tailored solutions designed to enhance the well-being and security of farm animals. With a commitment to innovation and reliability, we empower farmers with the tools they need to effectively monitor their livestock and mitigate potential threats. Our mission is to foster sustainable farming practices while ensuring the welfare of every animal under our care.</h4>
+  </div>
 
 </div>
+
 <style>
   .custom-border {
-    border-color: #000;
+    border-color: #000;;
     /* Darker black color */
     font-size: 45px;
     text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;

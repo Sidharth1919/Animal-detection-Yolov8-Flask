@@ -73,95 +73,47 @@
   style="background-color: rgb(7, 59, 58);">
 
   <h1 class="mt-5" style="color: #f8f9fa; padding-bottom: 0;">Farm Data</h1>
-    <!--<div class="stats shadow">
-    
-      <div class="stat">
-        <div class="stat-figure text-secondary">
-        </div>
-        <div class="stat-title">Video Source</div>
-        <div class="stat-value" id="video-source">None</div>
-      </div>
-      
-      <div class="stat">
-        <div class="stat-figure text-secondary">
-          
-        </div>
-        <div class="stat-title">Farm</div>
-        <div class="stat-value" id="farm">None Selected</div>
-       
-      </div>
-      
-      <div class="stat">
-        <div class="stat-figure text-secondary">
-          
-        </div>
-        <div class="stat-title">In Farm</div>
-        <div class="stat-value" id="detections">None</div>
-        
-      </div>
-      
-      <div class="stat">
-        <div class="stat-figure text-secondary">
-         
-        </div>
-        <div class="stat-title">Number Of Animals in Farm</div>
-        <div class="stat-value" id="count">0</div>
-       
-      </div>
-      
-      <div class="stat">
-        <div class="stat-figure text-secondary">
-      
-        </div>
-        <div class="stat-title">Threat detected</div>
-        <div class="stat-value" id="threat">None</div>
-       
-      </div>
-      
-    </div>
-  
-      
-</div>-->
-    <div class="info-box">
-      <h3>Video Source</h3>
-      <p id="video-source">None</p>
-    </div>
 
-    <div class="info-box">
-      <h3>Farm</h3>
-      <p id="farm">None Selected</p>
-    </div>
-
-    <div class="info-box">
-      <h3>In Farm</h3>
-      <p id="detections">None</p>
-    </div>
-
-    <div class="info-box">
-      <h3 id="animal">Number Of Animals in Farm</h3>
-      <p id="count">0</p>
-    </div>
-
-    <div class="info-box">
-      <h3>Threat detected</h3>
-      <p id="threat">None</p>
-    </div>
+  <div class="info-box">
+    <h3>Video Source</h3>
+    <p id="video-source">None</p>
   </div>
 
-  <div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
-    The count has been reduced. Please check the farm!
-  </div>
-  <div id="threatMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
-    A THREAT HAS ENTERED YOUR FARM. PLEASE CHECK YOUR FARM!
+  <div class="info-box">
+    <h3>Farm</h3>
+    <p id="farm">None Selected</p>
   </div>
 
-  <h1 class="mt-5">{{ var2 }}</h1>
+  <div class="info-box">
+    <h3>In Farm</h3>
+    <p id="detections">None</p>
+  </div>
 
-  {% if video_source %}
-  <img id="data" class="mt-3 mb-3 rounded" src="{{ url_for('video_feed', video_source=video_source)}}" id="videoFeed"
-    alt="cctvfotage" width="50%">
-  {% endif %}
+  <div class="info-box">
+    <h3 id="animal">Number Of Animals in Farm</h3>
+    <p id="count">0</p>
+  </div>
 
+  <div class="info-box">
+    <h3>Threat detected</h3>
+    <p id="threat">None</p>
+  </div>
+
+
+<div id="errorMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
+  The count has been reduced. Please check the farm!
+</div>
+<div id="threatMessage" style="display: none; color: rgb(255, 0, 0);padding: 20px 5px; margin-top: 10px;">
+  A THREAT HAS ENTERED YOUR FARM. PLEASE CHECK YOUR FARM!
+</div>
+
+<h1 style="color: #f8f9fa;" class="mt-5">{{ var2 }}</h1>
+
+{% if video_source %}
+<img id="data" class="mt-3 mb-3 rounded" src="{{ url_for('video_feed', video_source=video_source)}}" id="videoFeed"
+  alt="footage" width="50%">
+{% endif %}
+</div>
 </div>
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 

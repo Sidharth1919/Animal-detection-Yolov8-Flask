@@ -26,6 +26,8 @@ body{
     background-size: cover; /* Cover the entire background */
     background-repeat: no-repeat; /* Do not repeat the background image */
     z-index: -1; /* Send the background behind other content */
+    background-attachment: fixed;
+    background-position: center;
     }
 #bgimg {
   width: 100vw; /* Set the width to cover half of the screen */
