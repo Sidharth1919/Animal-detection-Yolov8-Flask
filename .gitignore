@@ -1,3 +1,11 @@
 .vs
 __pycache__
 .env
+yolov8s.pt
+yolov8m.pt
+yolov8l.pt
+sheep.mp4
+sheep1.mp4
+unit.py
+blackbox.py
+whitebox.py

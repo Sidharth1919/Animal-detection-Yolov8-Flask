@@ -10,8 +10,8 @@ from ultralytics import YOLO
 import numpy as np
 from auth import app, login_manager, mongo, auth_bp
 from auth import login, signup, logout
-from dotenv import load_dotenv 
 import os
+from datetime import datetime
 
 # global variables
 count_var = 0 # variable to store the count of animals
@@ -20,11 +20,10 @@ detection_list = [] # list to store the detected classes
 csv_str = "none"
 class_index = -1
 
-load_dotenv()  # Load variables from .env
 
 # creating flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') 
+app.config['SECRET_KEY'] = '1010'
 
 login_manager.init_app(app)
 socketio = SocketIO(app)
@@ -53,31 +52,38 @@ def handle_update_class_index(json):
     print('received class index: ' + str(class_index))
     
 
-VIDEO_FILE_PATH = "test2.mp4"  
+VIDEO_FILE_PATH = None
+
+@socketio.on('video_file_selected')
+def handle_video_file_selected(video_file_name):
+    global VIDEO_FILE_PATH 
+    video_file_path = os.path.join('static/uploads/', video_file_name)
+    VIDEO_FILE_PATH = video_file_path
+    cap = cv2.VideoCapture(VIDEO_FILE_PATH)
 
 
-def generate_frames(input_source):
+def generate_frames(input_source, user_id):
 
     # access the global variable
     global count_var
     global threat_type
     global detection_list
     global csv_str
+    global class_index
     model = YOLO("yolov8n.pt")
 
     if input_source == 0:  # Webcam
         cap = cv2.VideoCapture(0)
     elif input_source == 1:  # cam
-        cap = cv2.VideoCapture('http://192.168.223.21:4747/video')
+        cap = cv2.VideoCapture('http://192.168.240.29:4747/video')
     elif input_source == 2:  # Video file
         cap = cv2.VideoCapture(VIDEO_FILE_PATH)
-    else:
-        print('no source selected')
-        return  # Handle error - TO DO
+    elif input_source not in [0, 1, 2]:  # Validate input source
+        return "Invalid video source, please enter 0, 1, or 2"
     
     if not cap.isOpened():
         print("Error opening video stream or file")
-        return  # Handle error - TO DO
+        return "Error opening video stream or file. Please check the source or file integrity."
     while True:
 
         # ---------- capturing frames-----------#
@@ -148,6 +154,46 @@ def generate_frames(input_source):
 
         threat_type = ", ".join(threat_types) if threat_types else "None"
 
+# ---------------------------------------------------------------------------------------
+
+        try:
+            if user_id is not None and ObjectId.is_valid(user_id):
+                timestamp = datetime.now()
+                
+                for i in range(len(classes)):
+                    detected_class = names[classes[i]]
+                    detection = {
+                        "timestamp": timestamp,
+                        "detected_class": detected_class,
+                        "count": count_var  # Add the count
+                    }
+                    user_collection = mongo.db[f"user_{user_id}"]
+
+                    user_collection.update_one(
+                        {"user_id": ObjectId(user_id), "farm_index": int(class_index), "video_source": input_source},
+                        {"$push": {"detections": detection}},
+                        upsert=True
+                    )
+
+                for threat in threat_types:
+                    threat_data = {
+                        "timestamp": timestamp,
+                        "threat_type": threat
+                    }
+                    user_collection = mongo.db[f"user_{user_id}"]
+
+                    user_collection.update_one(
+                        {"user_id": ObjectId(user_id), "farm_index": int(class_index), "video_source": input_source},
+                        {"$push": {"threats": threat_data}},
+                        upsert=True
+                    )
+            else:
+                print("User ID is None or invalid")
+                continue
+        except Exception as e:
+            print(f"Error occurred in generate_frames: {e}")
+            continue
+
         # ----------- bounding boxes for animal detections---------------#
         bbox = [] 
         for i in idx:
@@ -210,8 +256,10 @@ def video_feed():
         video_source = int(video_source)
     except ValueError:
         return "Invalid video source, please enter 0, 1, or 2"
+    user_id = str(current_user.id)
+    print('user_id:', user_id)
 
-    return Response(generate_frames(video_source), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generate_frames(video_source, user_id), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @socketio.on('send_updates')
@@ -240,7 +288,82 @@ def farm():
     
     if request.method == 'GET':
         return render_template('farm.html')
+    
+@app.route('/dashboard/<user_id>')
+@login_required
+def dashboard(user_id):
+    user_collection = mongo.db[f"user_{user_id}"]
+    farm_data = {}
 
+    # Cow Farm (index 19)
+    cow_farm_data = user_collection.find_one({"farm_index": 19})
+    if cow_farm_data:
+        farm_data["Cow Farm"] = process_farm_data(cow_farm_data)
+
+    # Sheep Farm (index 18)
+    sheep_farm_data = user_collection.find_one({"farm_index": 18})
+    if sheep_farm_data:
+        farm_data["Sheep Farm"] = process_farm_data(sheep_farm_data)
+
+    # Horse Farm (index 17)
+    horse_farm_data = user_collection.find_one({"farm_index": 17})
+    if horse_farm_data:
+        farm_data["Horse Farm"] = process_farm_data(horse_farm_data)
+
+    if not farm_data:
+        return render_template('dashboard.html', error='No data available for the user.')
+
+    return render_template('dashboard.html', farm_data=farm_data, error=None)
+
+def process_farm_data(farm_data):
+    # Prepare the data for the tables
+    detections = farm_data.get('detections', [])
+    video_source_counts = farm_data.get('video_source_counts', {})
+    threats = farm_data.get('threats', [])
+
+    # Animal Detection Data
+    animal_detection_data = {}
+    for detection in detections:
+        animal_type = detection['detected_class']
+        count = detection['count']
+        animal_detection_data[animal_type] = animal_detection_data.get(animal_type, 0) + count
+
+    # Animal Count Over Time Data
+    animal_count_data = [
+        {'timestamp': detection['timestamp'], 'detections': detection['detected_class'], 'count': detection['count']}
+        for detection in detections
+    ]
+
+    # Threat Detection Data
+    threat_detection_data = [
+        {'timestamp': threat['timestamp'], 'threat_type': threat['threat_type']}
+        for threat in threats
+    ]
+
+    # Video Source Data
+    video_source_data = video_source_counts
+
+    # Summary Statistics
+    if animal_detection_data:  # Check if animal_detection_data is not empty
+        animal_counts = animal_detection_data.values()
+        total_animals = sum(animal_counts)
+        most_common_animal = max(animal_detection_data, key=animal_detection_data.get)
+    else:
+        total_animals = 0
+        most_common_animal = "None"
+
+    most_common_threat = max((threat['threat_type'] for threat in threat_detection_data), key=(
+        lambda x: sum(1 for t in threat_detection_data if t['threat_type'] == x)), default='None')
+
+    return {
+        'animal_detection_data': animal_detection_data,
+        'animal_count_data': animal_count_data,
+        'threat_detection_data': threat_detection_data,
+        'video_source_data': video_source_data,
+        'total_animals': total_animals,
+        'most_common_animal': most_common_animal,
+        'most_common_threat': most_common_threat
+    }
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

@@ -17,15 +17,18 @@ body{
     margin: 0; /* Remove default margin */
     padding: 0; /* Remove default padding */
     overflow-x: hidden; /* Hide horizontal overflow */
-    position: fixed; /* Fix the background */
     top: 0; /* Position from top */
     right: 0; /* Position from right */
     width: 50%; /* Width of the background (adjust as needed) */
-    height: 100%; /* Full height */
-    background-image: url('/static/images/background2.jpg'); /* Background image */
+    height: 100vh; /* Full height */
+    background-image: url('/static/images/signup.jpg'); /* Background image */
     background-size: cover; /* Cover the entire background */
     background-repeat: no-repeat; /* Do not repeat the background image */
     z-index: -1; /* Send the background behind other content */
+    background-attachment: fixed; 
+    background-size: 100%;
+    background-position: center 55%; 
+    
     }
 #bgimg {
   width: 100vw; /* Set the width to cover half of the screen */
@@ -37,7 +40,7 @@ body{
   z-index: -1;
   position: relative;
 }
- 
+
 /* ----------------------------farmpage-------------------------------- */
 .fullform {
   display: flex; /* Allow for side-by-side arrangement */
@@ -47,9 +50,15 @@ body{
   width: 50vw;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .form-contain{
   max-width: 95%;
+}
+.tno .form-control {
+  text-align: center;
+  font-weight: bold;
+  color: rgb(7, 59, 58);
 }
 /* Style the container to look like a card */
 .form-control[style*="border: none"] { 
@@ -60,7 +69,8 @@ body{
   flex-direction: row;
   justify-content: center;
   max-width:100%;
-  background-color:rgb(7, 59, 58);}
+  background-color:rgb(7, 59, 58);
+}
 
 /* Style each radio button and label as a card */
 .form-check {
@@ -96,7 +106,7 @@ body{
 
 /* Style for selected card */
 .form-check-input:checked + .form-check-label {
-  background-color: #ddd; /* Or a highlight color of your choice */
+  background-color: #c0f3c0; /* Or a highlight color of your choice */
 }
 /* ------------------------------------------------------------------------- */
 
@@ -117,7 +127,7 @@ body{
         padding-left: 15vw;
     }
 
-    table {
+    /*table {
         border-collapse: collapse;
         width: 100%;
     }
@@ -125,8 +135,8 @@ body{
     th, td {
         padding: 8px;
         text-align: left;
-        border-bottom: 2px solid #000; /* Thick black bottom border */
-        border-right: 2px solid #000; /* Thick black right border */
+        border-bottom: 2px solid #000;
+        border-right: 2px solid #000; 
         border-top: 2px solid #000;
         border-left: 2px solid #000;
     }
@@ -137,8 +147,34 @@ body{
 
     tr:nth-child(even) {
         background-color: #f2f2f2;
+    }*/
+    .info-box {
+      background-color: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      display: inline-block;
+      width: 200px;
+      min-height: 150px;
+      margin: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      vertical-align: top;
     }
-
+    
+    .info-box h3 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: bold;
+      color:rgb(7, 59, 58)
+    }
+    
+    .info-box p {
+      margin-bottom: 0;
+      font-size: 24px;
+      color:rgb(7, 59, 58)
+      
+    }
 
 #getStartedButton {
   background-color: rgb(237, 243, 243);
@@ -175,7 +211,7 @@ body{
 /* ------------------------------------------------------------------------------------------------- */
 .signup-page {
   font-family: Arial, sans-serif;
-  background-image: url('/static/images/signup.jpg');
+  background-image: url('/static/images/background2.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -255,7 +291,7 @@ body{
   }
 }
 .left {
-  background-image: url('/static/images/signup.jpg');
+  background-image: url('/static/images/background2.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -353,3 +389,4 @@ body{
     padding: 0 25px;
   }
 }
+/* -------------------------------------------------------------------------- */
