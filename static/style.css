@@ -21,12 +21,13 @@ body{
     right: 0; /* Position from right */
     width: 50%; /* Width of the background (adjust as needed) */
     height: 100vh; /* Full height */
-    background-image: url('/static/images/background2.jpg'); /* Background image */
+    background-image: url('/static/images/background22.png'); /* Background image */
     background-size: cover; /* Cover the entire background */
     background-repeat: no-repeat; /* Do not repeat the background image */
     z-index: -1; /* Send the background behind other content */
     background-attachment: fixed; 
-    background-position: center; 
+    background-size: 100%;
+    background-position: center 10%; 
     
     }
 #bgimg {

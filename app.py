@@ -314,6 +314,7 @@ def dashboard(user_id):
         return render_template('dashboard.html', error='No data available for the user.')
 
     return render_template('dashboard.html', farm_data=farm_data, error=None)
+
 def process_farm_data(farm_data):
     # Prepare the data for the tables
     detections = farm_data.get('detections', [])
