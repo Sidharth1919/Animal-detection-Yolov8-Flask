@@ -37,7 +37,7 @@ body{
   z-index: -1;
   position: relative;
 }
- 
+
 /* ----------------------------farmpage-------------------------------- */
 .fullform {
   display: flex; /* Allow for side-by-side arrangement */
@@ -124,7 +124,7 @@ body{
         padding-left: 15vw;
     }
 
-    table {
+    /*table {
         border-collapse: collapse;
         width: 100%;
     }
@@ -132,8 +132,8 @@ body{
     th, td {
         padding: 8px;
         text-align: left;
-        border-bottom: 2px solid #000; /* Thick black bottom border */
-        border-right: 2px solid #000; /* Thick black right border */
+        border-bottom: 2px solid #000;
+        border-right: 2px solid #000; 
         border-top: 2px solid #000;
         border-left: 2px solid #000;
     }
@@ -144,8 +144,34 @@ body{
 
     tr:nth-child(even) {
         background-color: #f2f2f2;
+    }*/
+    .info-box {
+      background-color: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      display: inline-block;
+      width: 200px;
+      min-height: 150px;
+      margin: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      vertical-align: top;
     }
-
+    
+    .info-box h3 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: bold;
+      color:rgb(7, 59, 58)
+    }
+    
+    .info-box p {
+      margin-bottom: 0;
+      font-size: 24px;
+      color:rgb(7, 59, 58)
+      
+    }
 
 #getStartedButton {
   background-color: rgb(237, 243, 243);
@@ -360,5 +386,4 @@ body{
     padding: 0 25px;
   }
 }
-
 /* -------------------------------------------------------------------------- */

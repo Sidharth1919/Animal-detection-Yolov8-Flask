@@ -4,15 +4,12 @@ from flask_pymongo import PyMongo
 from werkzeug.security import check_password_hash, generate_password_hash
 from bson import ObjectId
 from flask import Blueprint
-from dotenv import load_dotenv 
 import os
-
-load_dotenv()  # Load variables from .env
 
 auth_bp = Blueprint('auth', __name__)
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') 
-app.config['MONGO_URI'] = os.getenv('URL')
+app.config['SECRET_KEY'] = '1010'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/farmdb'
 
 mongo = PyMongo(app)
 login_manager = LoginManager(app)
