@@ -75,7 +75,7 @@ def generate_frames(input_source, user_id):
     if input_source == 0:  # Webcam
         cap = cv2.VideoCapture(0)
     elif input_source == 1:  # cam
-        cap = cv2.VideoCapture('http://192.168.240.29:4747/video')
+        cap = cv2.VideoCapture('http://url:port/video')
     elif input_source == 2:  # Video file
         cap = cv2.VideoCapture(VIDEO_FILE_PATH)
     elif input_source not in [0, 1, 2]:  # Validate input source
