@@ -71,5 +71,5 @@ After installation, navigate to the `/signup` page to create an account. Log in 
 - [YOLO (Ultralytics)](https://ultralytics.com/yolo) for the object detection model.
 - [Flask](https://flask.palletsprojects.com/) and [Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/) for the web framework and real-time communication.
 - [MongoDB](https://www.mongodb.com/) for the database management system.
-- Parts of this project were inspired by the Number of People In A Room repository by Ramesh86-TurBo, with significant modifications and enhancements made to develop a comprehensive animal monitoring and threat detection system.
+- Parts of this project were inspired by the [Number of People In A Room](https://github.com/Ramesh86-TurBo/Number-Of-People-In-A-Room) repository by [Ramesh86-TurBo](https://github.com/Ramesh86-TurBo), with significant modifications and enhancements made to develop a comprehensive animal monitoring and threat detection system.
 
